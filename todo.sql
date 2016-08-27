@@ -34,17 +34,23 @@
     - Black Order Panzer
       -- Sprite
       -- On Map
-      - Movement
+      -- Movement
         -- UI Mode
         -- Highlight Moveable Area
-        - Track HasMoved
-        - Physical Movement
+        -- Track HasMoved
+        -- Physical Movement
         -- Pathfinding
+      - Attacking
+        - Highlight Attackable Area
+        - Physical Attack
+          - Remove HP
+          - Remove Unit if destroyed
       - Can Build
   - Enemy
     - Agarthan Grunt
   - Turn
     -- Generate Resources
+    - Allow Units To Move Again
     - Enemy AI
 
 

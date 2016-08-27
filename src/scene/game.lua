@@ -35,8 +35,11 @@ function Game:handleMapClick()
     return
   end
 
-  if self:tryToBuild()     then return end
-  if self:tryToStartMove() then return end
+  if self:tryToBuild()       then return end
+  if self:tryToStartMove()   then return end
+  if self:tryToExecuteMove() then return end
+
+  self:setMode(NORMAL)
 end
 
 function Game:tryToBuild()
@@ -59,9 +62,13 @@ function Game:tryToBuild()
 end
 
 function Game:tryToStartMove()
+  if self.mode == MOVE then
+    return false
+  end
+
   local unit = self.map.selectedTile.unit
 
-  if unit == nil then
+  if unit == nil or unit:isAllowedToMove() == false then
     return false
   end
 
@@ -73,11 +80,35 @@ function Game:tryToStartMove()
   -- 2. store on map
   self:setMoveOkay(moveablePositions)
 
+  self.moveSubject = unit
+
+  return true
+end
+
+function Game:tryToExecuteMove()
+  if self.mode ~= MOVE or self.moveSubject == nil then
+    return false
+  end
+
+  local tile = self.map.selectedTile
+
+  if tile == nil or self:isMoveOkay(tile.x, tile.y) == false then
+    return false
+  end
+
+  -- OK! Perform Move
+  local unit = self.moveSubject
+  self.map:setUnit(unit.tile.x, unit.tile.y, nil)
+  self.map:setUnit(tile.x, tile.y, unit)
+  unit:setMoved(true)
+
+  self:setMode(NORMAL)
+
   return true
 end
 
 function Game:isMoveOkay(x, y)
-  return self.moveOkay(pos(x, y)) == true
+  return self.moveOkay[pos(x, y)] == true
 end
 
 function Game:setMoveOkay(positions)
@@ -91,11 +122,18 @@ function Game:setMoveOkay(positions)
 end
 
 function Game:clearMoveOkay()
+  self.map:clearColors()
+
   self.moveOkay = {}
 end
 
 function Game:setMode(mode)
   self.mode = mode
+
+  if self.mode == NORMAL then
+    self:clearMoveOkay()
+    self.moveSubject = nil
+  end
 end
 
 function Game:draw()

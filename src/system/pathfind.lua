@@ -11,15 +11,15 @@ function PF:getMoveablePositions(unit)
   local map = unit.tile.map
   local finder = self:getPathfinder(map)
 
-  map:clearColors()
-
   for _, destTile in pairs(map.tiles) do
     -- Define start and goal locations coordinates
     local startX, startY = unit.tile.x + 1, unit.tile.y + 1
     local endX, endY = destTile.x + 1, destTile.y + 1
     local destDistance = math.abs(startX - endX) + math.abs(startY - endY)
 
-    if destDistance <= unit:getMovementRange() and destDistance > 0 then
+
+
+    if destDistance <= unit:getMovementRange() and map:getUnit(destTile.x, destTile.y) == nil then
       local path = finder:getPath(startX, startY, endX, endY)
 
       if path and path:getLength() <= unit:getMovementRange() then

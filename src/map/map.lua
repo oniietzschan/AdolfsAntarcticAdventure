@@ -26,29 +26,29 @@ end
 
 local mapData = [[
 ^^^^......
-^^....*...
+^^....p..*
 ..........
 ..p.......
 ..^...^^^.
 ....^^^^..
-.p........
+....p.....
 ..........
-^...p*.^^^
+^....*.^^^
 ^^..^^^^^^
 ]]
 
-mapData = [[
-^^^^..pppp
-^^....*...
-......^.^^
-..p...^p^.
-..^...^^^.
-....^^^^..
-.p...pppp.
-..........
-^...p*.^^^
-^^..^^^^^^
-]]
+-- mapData = [[
+-- ^^^^..pppp
+-- ^^....*...
+-- ......^.^^
+-- ..p...^p^.
+-- ..^...^^^.
+-- ....^^^^..
+-- .p...pppp.
+-- ..........
+-- ^...p*.^^^
+-- ^^..^^^^^^
+-- ]]
 
 function Map:load()
   local y = 0
@@ -139,6 +139,15 @@ function Map:setTile(x, y, tile)
   self.tiles[x .. ',' .. y] = tile
 end
 
+function Map:getUnit(x, y)
+  local tile = self:getTile(x, y)
+  if tile == nil then
+    error(x, y)
+  end
+
+  return tile.unit
+end
+
 function Map:setUnit(x, y, unit)
   local tile = self:getTile(x, y)
   if tile == nil then
@@ -173,6 +182,10 @@ end
 function Map:endTurn()
   for _, tile in ipairs(self.orderedTiles) do
     tile:endTurn()
+
+    if tile.unit then
+      tile.unit:endTurn()
+    end
   end
 end
 

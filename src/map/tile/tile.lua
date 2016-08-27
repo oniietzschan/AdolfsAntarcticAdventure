@@ -45,7 +45,7 @@ function C:isPassable()
 end
 
 function C:setUnit(unit)
-  if self.unit ~= nil then
+  if unit ~= nil and self.unit ~= nil then
     error('already has unit!')
   end
 

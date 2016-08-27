@@ -1,6 +1,8 @@
 local C = class('Panzer', Unit)
 
 function C:initialize()
+  self.sprite = Sprite.panzer:newInstance()
+
   Unit.initialize(self)
 
   self.hp = 5
@@ -8,9 +10,6 @@ function C:initialize()
   self.friendly = true
   self.movementRange = 3
   self.flying = false
-
-  self.sprite = Sprite.panzer:newInstance()
-    :setAnimation('active')
 end
 
 function C:getDefaultAnimation()
