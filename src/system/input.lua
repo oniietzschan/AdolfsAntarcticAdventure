@@ -10,12 +10,13 @@ function Input.initialize()
   _input = boipushy()
 
   local default_binds = {
-    [UP] = {'w', 'up', 'dpup'},
-    [DOWN] = {'s', 'down', 'dpdown'},
-    [LEFT] = {'a', 'left', 'dpleft'},
-    [RIGHT] = {'d', 'right', 'dpright'},
-    [CONFIRM] = {'z', 'fdown'},
-    [CANCEL] = {'x', 'fright'},
+    [LEFT_CLICK] = {'mouse1'},
+    -- [UP] = {'w', 'up', 'dpup'},
+    -- [DOWN] = {'s', 'down', 'dpdown'},
+    -- [LEFT] = {'a', 'left', 'dpleft'},
+    -- [RIGHT] = {'d', 'right', 'dpright'},
+    -- [CONFIRM] = {'z', 'fdown'},
+    -- [CANCEL] = {'x', 'fright'},
     [FULLSCREEN] = {'f'},
     [QUIT] = {'escape', 'back', 'start'},
     [PLUS] = {'+', '=', 'kp+'},
@@ -30,35 +31,19 @@ function Input.initialize()
 end
 
 function Input.handle()
-  Input.menuInput()
   Input.globalInput()
 end
 
-function Input.menuInput()
-  if _input:pressed(UP) then
-  end
-  if _input:pressed(DOWN) then
-  end
-  if _input:pressed(LEFT) then
-  end
-  if _input:pressed(RIGHT) then
-  end
-  if _input:pressed(CONFIRM) then
-  end
-  if _input:pressed(CANCEL) then
-  end
-end
-
 function Input.pressed(...)
-  return _input:pressed(...)
+  return _input:pressed(...) == true
 end
 
 function Input.down(...)
-  return _input:down(...)
+  return _input:down(...) == true
 end
 
 function Input.released(...)
-  return _input:released(...)
+  return _input:released(...) == true
 end
 
 function Input.globalInput()

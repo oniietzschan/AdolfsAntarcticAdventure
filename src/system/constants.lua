@@ -25,6 +25,8 @@ TILE_W = 32
 MAP_TILES_X = 10
 MAP_TILES_Y = 10
 
+MINE_STEEL_COST = 30
+
 local player_walk_speed = 96
 local time_to_stop = 0.225
 local dampen_cutoff_speed = 1
@@ -44,16 +46,18 @@ COLOR_DARK_RED = {128, 0, 0}
 COLOR_GREEN = {0, 255, 0}
 COLOR_GRAY = {128, 128, 128}
 COLOR_RED = {255, 0, 0}
+COLOR_SHADOW = {0, 0, 0, 128}
 COLOR_WHITE = {255, 255, 255}
 
 COLOR_BACKGROUND = {43, 48, 59}
 
-CONFIRM = 'confirm'
-CANCEL = 'cancel'
-UP = 'up'
-DOWN = 'down'
-LEFT = 'left'
-RIGHT = 'right'
+LEFT_CLICK = 'leftClick'
+-- CONFIRM = 'confirm'
+-- CANCEL = 'cancel'
+-- UP = 'up'
+-- DOWN = 'down'
+-- LEFT = 'left'
+-- RIGHT = 'right'
 FULLSCREEN = 'fullscreen'
 MINUS = 'minus'
 PLUS = 'plus'

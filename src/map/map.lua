@@ -9,7 +9,7 @@ function Map:initialize()
   for x = 0, MAP_TILES_X - 1 do
     for y = 0, MAP_TILES_Y - 1 do
 
-      local tile = Tile(x, y, self)
+      local tile = Tile(self)
 
       local position = x .. ',' .. y
       self.tiles[position] = tile
@@ -25,14 +25,14 @@ end
 
 local mapData = [[
 ^^^^......
-^^........
+^^....*...
 ..........
 ..........
 ..^...^^^.
 ....^^^^..
 ..........
 ..........
-^......^^^
+^....*.^^^
 ^^..^^^^^^
 ]]
 
@@ -40,21 +40,19 @@ function Map:load()
   local y = 0
 
   for line in string.gmatch(mapData, "(.-)\n") do
-    print('line: ' .. line .. ' len: ' .. #line)
-
     for x = 0, #line - 1 do
       local char = line:sub(x + 1, x + 1)
 
-      print('(' .. x .. ', ' .. y .. ') ' .. char)
-
       local class = nil
 
-      if char == '^' then
+      if     char == '^' then
         class = Mountain
+      elseif char == '*' then
+        class = Crystal
       end
 
       if class then
-        local tile = class(x, y, self)
+        local tile = class(self)
         self:setTile(x, y, tile)
       end
     end
@@ -81,6 +79,10 @@ end
 
 function Map:update(dt)
   self:selectTile()
+
+  for _, tile in ipairs(self.orderedTiles) do
+    tile:update(dt)
+  end
 end
 
 function Map:selectTile()
@@ -108,6 +110,10 @@ function Map:setTile(x, y, tile)
   if x < 0 or y < 0 or x >= MAP_TILES_X or y >= MAP_TILES_Y then
     error(x, y)
   end
+
+  tile.map = self
+  tile.x = x
+  tile.y = y
 
   self.tiles[x .. ',' .. y] = tile
 end

@@ -1,16 +1,16 @@
 local Tile = class('Tile')
 
-function Tile:initialize(x, y, map, animation)
-  self.x = x
-  self.y = y
-  self.map = map
-
+function Tile:initialize()
   self.sprite = Sprite.tiles:newInstance()
     :setAnimation(self:getDefaultAnimation())
 end
 
 function Tile:getDefaultAnimation()
   return 'tundra'
+end
+
+function Tile:update(dt)
+  self.sprite:animate(dt)
 end
 
 function Tile:draw()
@@ -26,11 +26,8 @@ function Tile:draw()
   -- centre offset
   y = y - 8
 
-  -- lg.setColor((self == game.selectedTile) and COLOR_GRAY or COLOR_WHITE)
-  lg.setColor(COLOR_WHITE)
-  if self == self.map.selectedTile then
-    lg.setColor(COLOR_GRAY)
-  end
+  lg.setColor((self == self.map.selectedTile) and COLOR_GRAY or COLOR_WHITE)
+
   self.sprite:draw(x + self.map.offsetX, y + self.map.offsetY)
 end
 

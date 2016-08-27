@@ -19,30 +19,34 @@ Sprite = require 'system.sprite'
 Map  = require 'map.map'
 
 Tile     = require 'map.tile.tile'
+Crystal  = require 'map.tile.crystal'
+Mine     = require 'map.tile.mine'
 Mountain = require 'map.tile.mountain'
 
-HasComponents = require 'entity.trait.has_components'
+Button = require 'ui.button'
 
-Base   = require 'entity.base'
+-- HasComponents = require 'entity.trait.has_components'
+
+-- Base   = require 'entity.base'
 
 -- BaseFrill = require 'entity.frill.base_frill'
 -- Frill     = require 'entity.frill.frill'
 -- Particles = require 'entity.frill.particles'
 
-Seibutsu = require 'entity.seibutsu.seibutsu'
-Player   = require 'entity.seibutsu.player'
+-- Seibutsu = require 'entity.seibutsu.seibutsu'
+-- Player   = require 'entity.seibutsu.player'
 
-ZTile           = require 'entity.tiles.tile'
+-- ZTile           = require 'entity.tiles.tile'
 
-Component         = require 'entity.component.component'
--- AiPace            = require 'entity.component.ai_pace'
--- AiSleep           = require 'entity.component.ai_sleep'
-Living            = require 'entity.component.living'
-Motion            = require 'entity.component.motion'
-Touches           = require 'entity.component.touches'
+-- Component         = require 'entity.component.component'
+-- -- AiPace            = require 'entity.component.ai_pace'
+-- -- AiSleep           = require 'entity.component.ai_sleep'
+-- Living            = require 'entity.component.living'
+-- Motion            = require 'entity.component.motion'
+-- Touches           = require 'entity.component.touches'
 
-React             = require 'entity.component.react.react'
-Touchable         = require 'entity.component.react.touchable'
+-- React             = require 'entity.component.react.react'
+-- Touchable         = require 'entity.component.react.touchable'
 
 Scene = require 'scene.scene'
 Game  = require 'scene.game'
@@ -51,7 +55,8 @@ Ui    = require 'scene.ui'
 -- canvas_debug = nil
 game = nil
 player = nil
-util = Util
+-- util = Util
+ui = nil
 world = nil
 
 screen = nil

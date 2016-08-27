@@ -12,6 +12,9 @@ function Game:initialize(t)
   Scene.initialize(self, t)
 
   self.map = Map()
+
+  self.steel = 100
+  self.vril = 25
 end
 
 function Game:update(dt)
@@ -19,6 +22,28 @@ function Game:update(dt)
   dt = math.min(dt, ONE_FRAME_30FPS)
 
   self.map:update(dt)
+
+  self:handleBuilding()
+end
+
+function Game:handleBuilding()
+  if self.map.selectedTile == nil
+    or self.toBuild == nil
+    or Input.pressed(LEFT_CLICK) == false
+    or self.selectedButton ~= nil
+    or self.toBuild.validateTile(self.map.selectedTile) == false
+    or self.toBuild.validateResources() == false
+  then
+    return false
+  end
+
+  self.map:setTile(
+    self.map.selectedTile.x,
+    self.map.selectedTile.y,
+    self.toBuild(self.map)
+  )
+
+  self.map:storeOrderedTiles()
 end
 
 function Game:draw()
@@ -30,6 +55,22 @@ end
 function Game:fillBackgroundColor()
   lg.setColor(COLOR_BACKGROUND)
   lg.rectangle('fill', 0, 0, CAMERA_WIDTH, CAMERA_HEIGHT)
+end
+
+function Game:addSteel(i)
+  self.steel = self.steel + i
+end
+
+function Game:removeSteel(i)
+  self.steel = self.steel - i
+end
+
+function Game:addVrilForce(i)
+  self.vril = self.vril + i
+end
+
+function Game:removeVrilForce(i)
+  self.vril = self.vril - i
 end
 
 -- function Game:initWorld()
