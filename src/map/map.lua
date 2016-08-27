@@ -5,7 +5,6 @@ function Map:initialize()
   self.offsetY = 171
 
   self.tiles = {}
-  self.orderedTiles = {}
 
   for x = 0, MAP_TILES_X - 1 do
     for y = 0, MAP_TILES_Y - 1 do
@@ -15,8 +14,60 @@ function Map:initialize()
       local position = x .. ',' .. y
       self.tiles[position] = tile
 
-      table.insert(self.orderedTiles, #self.orderedTiles + 1, tile)
+      self:setTile(x, y, tile)
     end
+  end
+
+  self:load()
+
+  self:storeOrderedTiles()
+end
+
+local mapData = [[
+^^^^......
+^^........
+..........
+..........
+..^...^^^.
+....^^^^..
+..........
+..........
+^......^^^
+^^..^^^^^^
+]]
+
+function Map:load()
+  local y = 0
+
+  for line in string.gmatch(mapData, "(.-)\n") do
+    print('line: ' .. line .. ' len: ' .. #line)
+
+    for x = 0, #line - 1 do
+      local char = line:sub(x + 1, x + 1)
+
+      print('(' .. x .. ', ' .. y .. ') ' .. char)
+
+      local class = nil
+
+      if char == '^' then
+        class = Mountain
+      end
+
+      if class then
+        local tile = class(x, y, self)
+        self:setTile(x, y, tile)
+      end
+    end
+
+    y = y + 1
+  end
+end
+
+function Map:storeOrderedTiles()
+  self.orderedTiles = {}
+
+  for _, tile in pairs(self.tiles) do
+    table.insert(self.orderedTiles, #self.orderedTiles + 1, tile)
   end
 
   table.sort(self.orderedTiles, function(a, b)
@@ -51,6 +102,14 @@ function Map:getTile(x, y)
   end
 
   return self.tiles[x .. ',' .. y]
+end
+
+function Map:setTile(x, y, tile)
+  if x < 0 or y < 0 or x >= MAP_TILES_X or y >= MAP_TILES_Y then
+    error(x, y)
+  end
+
+  self.tiles[x .. ',' .. y] = tile
 end
 
 function Map:draw()

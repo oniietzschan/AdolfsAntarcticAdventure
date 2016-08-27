@@ -17,7 +17,9 @@ Input  = require 'system.input'
 Sprite = require 'system.sprite'
 
 Map  = require 'map.map'
-Tile = require 'map.tile'
+
+Tile     = require 'map.tile.tile'
+Mountain = require 'map.tile.mountain'
 
 HasComponents = require 'entity.trait.has_components'
 
@@ -41,10 +43,6 @@ Touches           = require 'entity.component.touches'
 
 React             = require 'entity.component.react.react'
 Touchable         = require 'entity.component.react.touchable'
-
-MapFactory   = require 'map.map_factory'
-Room         = require 'map.room.room'
-StartingRoom = require 'map.room.starting_room'
 
 Scene = require 'scene.scene'
 Game  = require 'scene.game'

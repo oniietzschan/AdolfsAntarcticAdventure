@@ -8,8 +8,8 @@
 
 - Ichiban Daisuki
   - Map Generation
-    - Read from template
-    - Mountains
+    -- Read from template
+    -- Mountains
     - Vril Energy
 
 

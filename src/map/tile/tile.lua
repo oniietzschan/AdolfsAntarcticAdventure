@@ -1,12 +1,16 @@
 local Tile = class('Tile')
 
-function Tile:initialize(x, y, map)
+function Tile:initialize(x, y, map, animation)
   self.x = x
   self.y = y
   self.map = map
 
   self.sprite = Sprite.tiles:newInstance()
-    :setAnimation('tundra')
+    :setAnimation(self:getDefaultAnimation())
+end
+
+function Tile:getDefaultAnimation()
+  return 'tundra'
 end
 
 function Tile:draw()
