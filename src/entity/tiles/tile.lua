@@ -1,7 +1,7 @@
 local Tile = class('Tile', Base)
 
 function Tile:initialize(t)
-  t.sprite = t.sprite or Sprite.tiles
+  t.sprite = t.sprite or Sprite.zztiles
   t.solid = t.solid or false
 
   Base.initialize(self, t)

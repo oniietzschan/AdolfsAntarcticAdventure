@@ -16,6 +16,9 @@ Util   = require 'system.util'
 Input  = require 'system.input'
 Sprite = require 'system.sprite'
 
+Map  = require 'map.map'
+Tile = require 'map.tile'
+
 HasComponents = require 'entity.trait.has_components'
 
 Base   = require 'entity.base'
@@ -27,7 +30,7 @@ Base   = require 'entity.base'
 Seibutsu = require 'entity.seibutsu.seibutsu'
 Player   = require 'entity.seibutsu.player'
 
-Tile           = require 'entity.tiles.tile'
+ZTile           = require 'entity.tiles.tile'
 
 Component         = require 'entity.component.component'
 -- AiPace            = require 'entity.component.ai_pace'
@@ -53,7 +56,7 @@ player = nil
 util = Util
 world = nil
 
-local screen = nil
+screen = nil
 local scenes = {}
 
 function love.load(arg)

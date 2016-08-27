@@ -7,10 +7,14 @@
 `
 
 - Ichiban Daisuki
-
+  - Map Generation
+    - Read from template
+    - Mountains
+    - Vril Energy
 
 
 - Daisuki
+  -- Focused Tile should be more precise
 
 
 

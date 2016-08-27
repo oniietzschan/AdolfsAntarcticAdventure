@@ -19,6 +19,11 @@ GAME_MIN_Y = 0
 GAME_MAX_X = 640 -- - PLAYER_W
 GAME_MAX_Y = 360 -- - PLAYER_H
 
+TILE_H = 16
+TILE_W = 32
+
+MAP_TILES_X = 10
+MAP_TILES_Y = 10
 
 local player_walk_speed = 96
 local time_to_stop = 0.225
@@ -37,8 +42,11 @@ COLOR_DARK_GREEN = {0, 128, 0}
 COLOR_DARK_GREY = {64, 64, 64}
 COLOR_DARK_RED = {128, 0, 0}
 COLOR_GREEN = {0, 255, 0}
+COLOR_GRAY = {128, 128, 128}
 COLOR_RED = {255, 0, 0}
 COLOR_WHITE = {255, 255, 255}
+
+COLOR_BACKGROUND = {43, 48, 59}
 
 CONFIRM = 'confirm'
 CANCEL = 'cancel'
