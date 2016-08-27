@@ -13,6 +13,8 @@ function Game:initialize(t)
 
   self.map = Map()
 
+  self:setMode(NORMAL)
+  self:clearMoveOkay()
   self.steel = 100
   self.vril = 25
 end
@@ -23,20 +25,28 @@ function Game:update(dt)
 
   self.map:update(dt)
 
-  self:handleBuilding()
+  self:handleMapClick()
 end
 
-function Game:handleBuilding()
+function Game:handleMapClick()
   if self.map.selectedTile == nil
-    or self.toBuild == nil
     or Input.pressed(LEFT_CLICK) == false
+  then
+    return
+  end
+
+  if self:tryToBuild()     then return end
+  if self:tryToStartMove() then return end
+end
+
+function Game:tryToBuild()
+  if self.toBuild == nil
     or self.selectedButton ~= nil
     or self.toBuild.validateTile(self.map.selectedTile) == false
     or self.toBuild.validateResources() == false
   then
     return false
   end
-
   self.map:setTile(
     self.map.selectedTile.x,
     self.map.selectedTile.y,
@@ -44,6 +54,48 @@ function Game:handleBuilding()
   )
 
   self.map:storeOrderedTiles()
+
+  return true
+end
+
+function Game:tryToStartMove()
+  local unit = self.map.selectedTile.unit
+
+  if unit == nil then
+    return false
+  end
+
+  self:setMode(MOVE)
+
+  -- 1. determine acceptable spots
+  local moveablePositions = Pathfind:getMoveablePositions(unit)
+
+  -- 2. store on map
+  self:setMoveOkay(moveablePositions)
+
+  return true
+end
+
+function Game:isMoveOkay(x, y)
+  return self.moveOkay(pos(x, y)) == true
+end
+
+function Game:setMoveOkay(positions)
+  self:clearMoveOkay()
+
+  for _, p in ipairs(positions) do
+    self.moveOkay[pos(p.x, p.y)] = true
+
+    self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_BLUE)
+  end
+end
+
+function Game:clearMoveOkay()
+  self.moveOkay = {}
+end
+
+function Game:setMode(mode)
+  self.mode = mode
 end
 
 function Game:draw()

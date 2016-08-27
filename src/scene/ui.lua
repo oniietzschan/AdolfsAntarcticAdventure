@@ -154,9 +154,10 @@ function Ui:drawHover()
 end
 
 function Ui:drawFps()
-  lg.setFont(font["tiny"])
+  lg.setFont(font["dialog"])
+  lg.setLineWidth(2)
 
-  local text = "FPS: " .. tostring(love.timer.getFPS())
+  local text = tostring(love.timer.getFPS())
 
   self:drawTextShadow(text, 2, 2)
 end

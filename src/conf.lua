@@ -7,7 +7,7 @@ function love.conf(t)
   SCREEN_WIDTH = 640
   SCREEN_HEIGHT = 360
 
-  t.window.title = "LD36"
+  t.window.title = "Adolf's Antarctic Adventure"
   t.window.icon = 'assets/icon.png'
 
   t.window.width = SCREEN_WIDTH * SCREEN_SCALE

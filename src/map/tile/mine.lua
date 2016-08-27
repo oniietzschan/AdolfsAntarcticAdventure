@@ -12,6 +12,8 @@ function C:initialize(...)
   Tile.initialize(self, ...)
 
   game:removeSteel(MINE_STEEL_COST)
+
+  self.impassable = true
 end
 
 function C:getDefaultAnimation()

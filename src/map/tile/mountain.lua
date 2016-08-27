@@ -2,6 +2,8 @@ local C = class('Mountain', Tile)
 
 function C:initialize(...)
   Tile.initialize(self, ...)
+
+  self.impassable = true
 end
 
 function C:getDefaultAnimation()

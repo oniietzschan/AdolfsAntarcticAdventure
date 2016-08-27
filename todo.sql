@@ -35,11 +35,11 @@
       -- Sprite
       -- On Map
       - Movement
-        - UI Mode
-        - Highlight Moveable Area
+        -- UI Mode
+        -- Highlight Moveable Area
         - Track HasMoved
         - Physical Movement
-        - Pathfinding
+        -- Pathfinding
       - Can Build
   - Enemy
     - Agarthan Grunt

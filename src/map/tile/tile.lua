@@ -33,13 +33,15 @@ function C:draw()
   -- centre offset
   y = y - 8
 
-  lg.setColor((self == self.map.selectedTile) and COLOR_GRAY or COLOR_WHITE)
-
   self.sprite:draw(x, y)
 
   if self.unit then
     self.unit:draw(x, y)
   end
+end
+
+function C:isPassable()
+  return self.impassable ~= true
 end
 
 function C:setUnit(unit)
@@ -48,6 +50,10 @@ function C:setUnit(unit)
   end
 
   self.unit = unit
+
+  if unit ~= nil then
+    unit.tile = self
+  end
 end
 
 function C:endTurn()

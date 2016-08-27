@@ -1,6 +1,10 @@
 require 'lib/strict'
 -- require 'socket'
 
+function pos(x, y)
+  return x .. ',' .. y
+end
+
 rng = math.random
 
 class          = require 'lib.middleclass'
@@ -10,9 +14,10 @@ Terebi         = require 'lib.terebi.terebi'
 
 require 'system.constants'
 
-Util   = require 'system.util'
-Input  = require 'system.input'
-Sprite = require 'system.sprite'
+Util     = require 'system.util'
+Input    = require 'system.input'
+Pathfind = require 'system.pathfind'
+Sprite   = require 'system.sprite'
 
 Map  = require 'map.map'
 
@@ -37,8 +42,6 @@ Button = require 'ui.button'
 
 -- Seibutsu = require 'entity.seibutsu.seibutsu'
 -- Player   = require 'entity.seibutsu.player'
-
--- ZTile           = require 'entity.tiles.tile'
 
 -- Component         = require 'entity.component.component'
 -- -- AiPace            = require 'entity.component.ai_pace'

@@ -5,6 +5,9 @@ function C:initialize()
 
   self.hp = 5
   self.maxHp = 5
+  self.friendly = true
+  self.movementRange = 3
+  self.flying = false
 
   self.sprite = Sprite.panzer:newInstance()
     :setAnimation('active')

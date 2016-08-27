@@ -11,8 +11,7 @@ function Map:initialize()
 
       local tile = Tile(self)
 
-      local position = x .. ',' .. y
-      self.tiles[position] = tile
+      self.tiles[pos(x, y)] = tile
 
       self:setTile(x, y, tile)
     end
@@ -21,6 +20,8 @@ function Map:initialize()
   self:load()
 
   self:storeOrderedTiles()
+
+  self:clearColors()
 end
 
 local mapData = [[
@@ -31,6 +32,19 @@ local mapData = [[
 ..^...^^^.
 ....^^^^..
 .p........
+..........
+^...p*.^^^
+^^..^^^^^^
+]]
+
+mapData = [[
+^^^^..pppp
+^^....*...
+......^.^^
+..p...^p^.
+..^...^^^.
+....^^^^..
+.p...pppp.
 ..........
 ^...p*.^^^
 ^^..^^^^^^
@@ -136,8 +150,24 @@ end
 
 function Map:draw()
   for _, tile in ipairs(self.orderedTiles) do
+    local color = self:getColor(tile.x, tile.y)
+
+    lg.setColor((tile == self.selectedTile) and COLOR_HIGHLIGHT_GREY or color)
+
     tile:draw()
   end
+end
+
+function Map:getColor(x, y)
+  return self.tileColors[pos(x, y)] or COLOR_WHITE
+end
+
+function Map:setColor(x, y, color)
+  self.tileColors[pos(x, y)] = color
+end
+
+function Map:clearColors()
+  self.tileColors = {}
 end
 
 function Map:endTurn()
