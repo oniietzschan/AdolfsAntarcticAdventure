@@ -23,6 +23,19 @@ function Ui:initButtons()
     end,
     sprite = Sprite.buttonBuildMine,
   })
+  self.buttons[2] = Button(582, 52, {
+    callback = function()
+      game.toBuild = VrilHarvester
+    end,
+    sprite = Sprite.buttonBuildVrilHarvester,
+  })
+  self.buttons[3] = Button(582, 94, {
+    callback = function()
+      -- game.toBuild = VrilHarvester
+      game:endTurn()
+    end,
+    sprite = Sprite.buttonEndTurn,
+  })
 end
 
 function Ui:initFonts()
@@ -92,6 +105,7 @@ end
 
 function Ui:draw()
   self:drawResources()
+  self:drawHover()
   self:drawFps()
 
   self:drawButtons()
@@ -109,6 +123,29 @@ function Ui:drawResources()
 
   self:drawTextShadow(steelText, 5, 10)
   self:drawTextShadow(vrilText,  5, 20)
+end
+
+function Ui:drawHover()
+  if game.map.selectedTile == nil then
+    return false
+  end
+
+  lg.setFont(font["mono16"])
+  lg.setLineWidth(1)
+
+  local info = game.map.selectedTile:hover()
+
+  if info.name then
+    self:drawTextShadow(info.name, 5, 260)
+  end
+
+  if info.gameplay then
+    self:drawTextShadow(info.gameplay, 5, 275)
+  end
+
+  if info.flavour then
+    self:drawTextShadow(info.flavour, 5, 290, COLOR_GRAY)
+  end
 end
 
 function Ui:drawFps()

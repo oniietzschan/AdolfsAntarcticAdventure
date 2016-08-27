@@ -124,4 +124,10 @@ function Map:draw()
   end
 end
 
+function Map:endTurn()
+  for _, tile in ipairs(self.orderedTiles) do
+    tile:endTurn()
+  end
+end
+
 return Map

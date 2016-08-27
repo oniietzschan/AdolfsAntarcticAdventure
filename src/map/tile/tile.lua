@@ -1,19 +1,19 @@
-local Tile = class('Tile')
+local C = class('Tile')
 
-function Tile:initialize()
+function C:initialize()
   self.sprite = Sprite.tiles:newInstance()
     :setAnimation(self:getDefaultAnimation())
 end
 
-function Tile:getDefaultAnimation()
+function C:getDefaultAnimation()
   return 'tundra'
 end
 
-function Tile:update(dt)
+function C:update(dt)
   self.sprite:animate(dt)
 end
 
-function Tile:draw()
+function C:draw()
   local x = 0
   local y = 0
 
@@ -31,4 +31,13 @@ function Tile:draw()
   self.sprite:draw(x + self.map.offsetX, y + self.map.offsetY)
 end
 
-return Tile
+function C:endTurn()
+end
+
+function C:hover()
+  return {
+    name = 'Tundra',
+  }
+end
+
+return C

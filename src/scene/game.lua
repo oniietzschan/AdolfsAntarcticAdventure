@@ -57,6 +57,10 @@ function Game:fillBackgroundColor()
   lg.rectangle('fill', 0, 0, CAMERA_WIDTH, CAMERA_HEIGHT)
 end
 
+function Game:endTurn()
+  self.map:endTurn()
+end
+
 function Game:addSteel(i)
   self.steel = self.steel + i
 end

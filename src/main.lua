@@ -1,9 +1,7 @@
 require 'lib/strict'
-require 'socket'
+-- require 'socket'
 
 rng = math.random
--- local loveRng = love.math.newRandomGenerator()
--- newRng = function(min, max) return loveRng:random(min, max) end
 
 class          = require 'lib.middleclass'
 Serpent        = require 'lib.serpent'
@@ -18,10 +16,11 @@ Sprite = require 'system.sprite'
 
 Map  = require 'map.map'
 
-Tile     = require 'map.tile.tile'
-Crystal  = require 'map.tile.crystal'
-Mine     = require 'map.tile.mine'
-Mountain = require 'map.tile.mountain'
+Tile           = require 'map.tile.tile'
+Crystal        = require 'map.tile.crystal'
+Mine           = require 'map.tile.mine'
+Mountain       = require 'map.tile.mountain'
+VrilHarvester  = require 'map.tile.vril_harvester'
 
 Button = require 'ui.button'
 

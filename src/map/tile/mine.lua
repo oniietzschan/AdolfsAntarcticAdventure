@@ -18,4 +18,15 @@ function C:getDefaultAnimation()
   return 'mine'
 end
 
+function C:endTurn()
+  game:addSteel(MINE_GENERATION_RATE)
+end
+
+function C:hover()
+  return {
+    name = 'Mine',
+    gameplay = 'Generates ' .. MINE_GENERATION_RATE .. ' steel each turn.',
+  }
+end
+
 return C
