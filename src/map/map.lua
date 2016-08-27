@@ -27,12 +27,12 @@ local mapData = [[
 ^^^^......
 ^^....*...
 ..........
-..........
+..p.......
 ..^...^^^.
 ....^^^^..
+.p........
 ..........
-..........
-^....*.^^^
+^...p*.^^^
 ^^..^^^^^^
 ]]
 
@@ -43,17 +43,24 @@ function Map:load()
     for x = 0, #line - 1 do
       local char = line:sub(x + 1, x + 1)
 
-      local class = nil
+      local class, unitClass = nil, nil
 
       if     char == '^' then
         class = Mountain
       elseif char == '*' then
         class = Crystal
+      elseif char == 'p' then
+        unitClass = Panzer
       end
 
       if class then
         local tile = class(self)
         self:setTile(x, y, tile)
+      end
+
+      if unitClass then
+        local unit = unitClass(self)
+        self:setUnit(x, y, unit)
       end
     end
 
@@ -116,6 +123,15 @@ function Map:setTile(x, y, tile)
   tile.y = y
 
   self.tiles[x .. ',' .. y] = tile
+end
+
+function Map:setUnit(x, y, unit)
+  local tile = self:getTile(x, y)
+  if tile == nil then
+    error(x, y)
+  end
+
+  tile:setUnit(unit)
 end
 
 function Map:draw()

@@ -22,6 +22,9 @@ Mine           = require 'map.tile.mine'
 Mountain       = require 'map.tile.mountain'
 VrilHarvester  = require 'map.tile.vril_harvester'
 
+Unit   = require 'map.unit.unit'
+Panzer = require 'map.unit.panzer'
+
 Button = require 'ui.button'
 
 -- HasComponents = require 'entity.trait.has_components'

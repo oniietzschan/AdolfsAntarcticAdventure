@@ -32,6 +32,15 @@
         -- check for resources
   - Units
     - Black Order Panzer
+      -- Sprite
+      -- On Map
+      - Movement
+        - UI Mode
+        - Highlight Moveable Area
+        - Track HasMoved
+        - Physical Movement
+        - Pathfinding
+      - Can Build
   - Enemy
     - Agarthan Grunt
   - Turn
@@ -44,6 +53,7 @@
     -- Name
     -- Gameplay Info
     - Flavour Text
+    -- Hover Over Units
   - Fix Shitty Sprites
     - Mine
     - Vril Harvester
@@ -57,5 +67,7 @@
 
 
 - Suki
+  - Meh Sprites
+    - Panzer
   - Alternate Sprites
     - Different Mountains

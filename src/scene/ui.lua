@@ -133,7 +133,12 @@ function Ui:drawHover()
   lg.setFont(font["mono16"])
   lg.setLineWidth(1)
 
-  local info = game.map.selectedTile:hover()
+  local info = nil
+  if game.map.selectedTile.unit then
+    info = game.map.selectedTile.unit:hover()
+  else
+    info = game.map.selectedTile:hover()
+  end
 
   if info.name then
     self:drawTextShadow(info.name, 5, 260)

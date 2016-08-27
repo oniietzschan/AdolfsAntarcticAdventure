@@ -11,6 +11,10 @@ end
 
 function C:update(dt)
   self.sprite:animate(dt)
+
+  if self.unit then
+    self.unit:update(dt)
+  end
 end
 
 function C:draw()
@@ -23,12 +27,27 @@ function C:draw()
   x = x + self.y * 16
   y = y + self.y * 8
 
+  x = x + self.map.offsetX
+  y = y + self.map.offsetY
+
   -- centre offset
   y = y - 8
 
   lg.setColor((self == self.map.selectedTile) and COLOR_GRAY or COLOR_WHITE)
 
-  self.sprite:draw(x + self.map.offsetX, y + self.map.offsetY)
+  self.sprite:draw(x, y)
+
+  if self.unit then
+    self.unit:draw(x, y)
+  end
+end
+
+function C:setUnit(unit)
+  if self.unit ~= nil then
+    error('already has unit!')
+  end
+
+  self.unit = unit
 end
 
 function C:endTurn()
