@@ -173,16 +173,16 @@ function Map:setTile(x, y, tile)
   self.tiles[x .. ',' .. y] = tile
 end
 
-function Map:filterUnits(filter)
-  local units = {}
+function Map:filterTiles(filter)
+  local tiles = {}
 
   for _, tile in pairs(self.tiles) do
-    if tile.unit and filter(tile.unit) then
-      table.insert(units, tile.unit)
+    if filter(tile) == true then
+      table.insert(tiles, tile)
     end
   end
 
-  return units
+  return tiles
 end
 
 function Map:getUnit(x, y)
@@ -201,6 +201,18 @@ function Map:setUnit(x, y, unit)
   end
 
   tile:setUnit(unit)
+end
+
+function Map:filterUnits(filter)
+  local units = {}
+
+  for _, tile in pairs(self.tiles) do
+    if tile.unit and filter(tile.unit) == true then
+      table.insert(units, tile.unit)
+    end
+  end
+
+  return units
 end
 
 function Map:draw()

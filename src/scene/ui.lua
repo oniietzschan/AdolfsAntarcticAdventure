@@ -19,19 +19,18 @@ function Ui:initButtons()
 
   self.buttons[1] = Button(582, 10, {
     callback = function()
-      game.toBuild = Mine
+      game:startBuilding(Mine)
     end,
     sprite = Sprite.buttonBuildMine,
   })
   self.buttons[2] = Button(582, 52, {
     callback = function()
-      game.toBuild = VrilHarvester
+      game:startBuilding(VrilHarvester)
     end,
     sprite = Sprite.buttonBuildVrilHarvester,
   })
   self.buttons[3] = Button(582, 94, {
     callback = function()
-      -- game.toBuild = VrilHarvester
       game:endTurn()
     end,
     sprite = Sprite.buttonEndTurn,

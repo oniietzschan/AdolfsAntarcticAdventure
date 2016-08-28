@@ -5,6 +5,8 @@ function C:initialize(...)
 
   Enemy.initialize(self)
 
+  self.hp = 6
+  self.maxHp = 6
   self.movementRange = 0
 end
 

@@ -15,7 +15,7 @@ function Game:initialize(t)
   self:nextMap()
 
   self:setMode(NORMAL)
-  self:clearMoveOkay()
+  self:clearActionOkay()
   self.steel = 100
   self.vril = 25
 end
@@ -55,22 +55,44 @@ function Game:handleMapClick()
   self:setMode(NORMAL)
 end
 
+function Game:startBuilding(toBuild)
+  self:setMode(BUILD)
+
+  self.toBuild = toBuild
+
+  do -- Set buildable locations
+    local allies = self.map:filterUnits(function(u) return u:isFriendly() end)
+    local buildableTiles = self.map:filterTiles(function(tile)
+      for _, ally in ipairs(allies) do
+        if Util.getDistance(tile, ally.tile) <= BUILD_RANGE then
+          return true
+        end
+      end
+    end)
+
+    local positions = {}
+    for _, tile in ipairs(buildableTiles) do
+      table.insert(positions, {x = tile.x, y = tile.y})
+    end
+
+    self:setActionOkay(positions)
+  end
+end
+
 function Game:tryToBuild()
+  local tile = self.map.selectedTile
+
   if self.toBuild == nil
     or self.selectedButton ~= nil
-    or self.toBuild.validateTile(self.map.selectedTile) == false
+    or self:isActionOkay(tile.x, tile.y) == false
+    or self.toBuild.validateTile(tile) == false
     or self.toBuild.validateResources() == false
   then
     return false
   end
 
   -- OK! Perform Build
-  self.map:setTile(
-    self.map.selectedTile.x,
-    self.map.selectedTile.y,
-    self.toBuild(self.map)
-  )
-
+  self.map:setTile(tile.x, tile.y, self.toBuild(self.map))
   self.map:storeOrderedTiles()
 
   self:setMode(NORMAL)
@@ -95,7 +117,7 @@ function Game:tryToStartMove()
   local moveablePositions = Pathfind:getMoveablePositions(unit)
 
   -- 2. store on map
-  self:setMoveOkay(moveablePositions)
+  self:setActionOkay(moveablePositions)
 
   self.moveSubject = unit
 
@@ -110,7 +132,7 @@ function Game:tryToExecuteMove()
   local unit = self.moveSubject
   local tile = self.map.selectedTile
 
-  if tile == nil or self:isMoveOkay(tile.x, tile.y) == false then
+  if tile == nil or self:isActionOkay(tile.x, tile.y) == false then
     return false
   end
 
@@ -136,11 +158,11 @@ function Game:tryToExecuteMove()
   if #enemyUnitsInRange >= 1 then
     -- Enemies are in range, so switch to attack mode!! FAITO!!
     self:setMode(ATTACK)
-    self:clearMoveOkay()
+    self:clearActionOkay()
 
     -- Highlight targets in Red, and mark them as "Move" Okay
     for _, unit in ipairs(enemyUnitsInRange) do
-      self.moveOkay[pos(unit.tile.x, unit.tile.y)] = true
+      self.actionOkay[pos(unit.tile.x, unit.tile.y)] = true
 
       self.map:setColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_REALLY_RED)
       self.map:setUnitColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_REALLY_RED)
@@ -164,7 +186,7 @@ function Game:tryToExecuteAttack()
 
   local tile = self.map.selectedTile
 
-  if tile == nil or self:isMoveOkay(tile.x, tile.y) == false then
+  if tile == nil or self:isActionOkay(tile.x, tile.y) == false then
     return false
   end
 
@@ -195,24 +217,29 @@ function Game:performMove(unit, destTile)
   self.map:setUnit(destTile.x, destTile.y, unit)
 end
 
-function Game:isMoveOkay(x, y)
-  return self.moveOkay[pos(x, y)] == true
+function Game:isActionOkay(x, y)
+  return self.actionOkay[pos(x, y)] == true
 end
 
-function Game:setMoveOkay(positions)
-  self:clearMoveOkay()
+function Game:setActionOkay(positions)
+  self:clearActionOkay()
+
+  local color = COLOR_HIGHLIGHT_BLUE
+  if self.mode == BUILD then
+    color = COLOR_HIGHLIGHT_GREEN
+  end
 
   for _, p in ipairs(positions) do
-    self.moveOkay[pos(p.x, p.y)] = true
-    self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_BLUE)
+    self.actionOkay[pos(p.x, p.y)] = true
+    self.map:setColor(p.x, p.y, color)
   end
 end
 
-function Game:clearMoveOkay()
+function Game:clearActionOkay()
   self.map:clearColors()
   self.map:clearUnitColors()
 
-  self.moveOkay = {}
+  self.actionOkay = {}
 end
 
 function Game:setMode(mode)
@@ -224,11 +251,11 @@ function Game:setMode(mode)
   self.mode = mode
 
   if self.mode == ATTACK then
-    self:clearMoveOkay()
+    self:clearActionOkay()
 
   elseif self.mode == NORMAL then
     self.toBuild = nil
-    self:clearMoveOkay()
+    self:clearActionOkay()
     self.moveSubject = nil
   end
 end
@@ -276,7 +303,6 @@ function Game:moveEnemies()
   -- 2. Enemies move in order of proximity
   table.sort(aiData, function(a, b) return a.closestUnitDist < b.closestUnitDist end)
   for _, data in ipairs(aiData) do
-    print(data.enemy, data.closestUnitDist) -- debug
 
     self:moveEnemy(data)
     self:attackWithEnemy(data.enemy)
@@ -285,8 +311,6 @@ end
 
 function Game:moveEnemy(data)
   local enemy = data.enemy
-
-  print(enemy:getMovementRange())
 
   for _, path in ipairs(data.unitPaths) do
     -- TODO: check if ally at end of path still exists!!
@@ -301,8 +325,6 @@ function Game:moveEnemy(data)
       if tile.unit == nil then
         self:performMove(enemy, tile)
       end
-
-      print(('Step: %d - x: %d - y: %d'):format(count, node.x, node.y))
     end
 
     -- exit if successfully followed path

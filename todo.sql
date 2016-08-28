@@ -6,65 +6,6 @@
         \/        \/       \/       \/
 `
 
-- Ichiban Daisuki
-  -- Map Generation
-    -- Read from template
-    -- Mountains
-    -- Vril Energy
-  -- Resources
-    -- display
-  - Buildings
-    - Can only build in certain proximity to units
-    -- Mine
-      -- Sprite
-      -- Button
-      -- Replace Tile On Click
-      -- validate
-        -- check that is mountain
-        -- check for resources
-    -- Vril Harvester
-      -- Sprite
-      -- Button
-      -- Replace Tile On Click
-      -- validate
-        -- check that is crystal
-        -- check for resources
-  -- Units
-    -- Black Order Panzer
-      -- Sprite
-      -- On Map
-      -- Movement
-        -- UI Mode
-        -- Highlight Moveable Area
-        -- Track HasMoved
-        -- Physical Movement
-        -- Pathfinding
-      - Attacking
-        -- Highlight Attackable Area
-        -- Move Closer
-          -- Move Closer
-          -- Handle When Closest Spot Is Not Free
-        -- Physical Attack
-          -- Remove HP
-          -- Remove Unit if destroyed
-        - Need ability to hold ground and attack
-  -- Enemy
-    -- Agarthan
-      -- Sprite
-      -- Generate On Map
-      -- AI
-    -- Agarthan Polar Monolith
-      -- Sprite
-      -- Convert To Unit
-      -- Can Be Destoyed
-  -- Turn
-    -- Generate Resources
-    -- Allow Units To Move Again
-    -- Enemy AI
-  -- Gameflow
-    -- After Monolith destroyed, load next map
-  -- UI
-    -- Show Unit HP
 
 
 - Daisuki
@@ -74,6 +15,8 @@
     - Enemies should determine whether target still exists before moving towards it
     -- Should be able to move 1-2 spaces, then attack. To allow for fighting in close quarters
   - Gameplay - Quality Of Life
+    - After cancelling attack, if next to enemy, should still be able to attack. (If not next to enemy, end unit turn as before.)
+  - Animations
     - Animations During Attack
     - Animations During Movement
     - Animations During Enemy Turn
@@ -112,3 +55,65 @@
     - Panzer
   - Alternate Sprites
     - Different Mountains
+
+
+
+-- Ichiban Daisuki
+  -- Map Generation
+    -- Read from template
+    -- Mountains
+    -- Vril Energy
+  -- Resources
+    -- display
+  -- Buildings
+    -- Can only build in certain proximity to units
+    -- Mine
+      -- Sprite
+      -- Button
+      -- Replace Tile On Click
+      -- validate
+        -- check that is mountain
+        -- check for resources
+    -- Vril Harvester
+      -- Sprite
+      -- Button
+      -- Replace Tile On Click
+      -- validate
+        -- check that is crystal
+        -- check for resources
+  -- Units
+    -- Black Order Panzer
+      -- Sprite
+      -- On Map
+      -- Movement
+        -- UI Mode
+        -- Highlight Moveable Area
+        -- Track HasMoved
+        -- Physical Movement
+        -- Pathfinding
+      -- Attacking
+        -- Highlight Attackable Area
+        -- Move Closer
+          -- Move Closer
+          -- Handle When Closest Spot Is Not Free
+        -- Physical Attack
+          -- Remove HP
+          -- Remove Unit if destroyed
+        -- Need ability to hold ground and attack
+  -- Enemy
+    -- Agarthan
+      -- Sprite
+      -- Generate On Map
+      -- AI
+    -- Agarthan Polar Monolith
+      -- Sprite
+      -- Convert To Unit
+      -- Can Be Destoyed
+  -- Turn
+    -- Generate Resources
+    -- Allow Units To Move Again
+    -- Enemy AI
+  -- Gameflow
+    -- After Monolith destroyed, load next map
+  -- UI
+    -- Show Unit HP
