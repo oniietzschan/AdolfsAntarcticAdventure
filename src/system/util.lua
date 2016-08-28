@@ -1,7 +1,20 @@
 local Util = {}
 
-Util.getDistance = function(tileA, tileB)
+-- function Util.getDistance(tileA, tileB)
+function Util.getDistance(tileA, tileB)
   return math.abs(tileA.x - tileB.x) + math.abs(tileA.y - tileB.y)
+end
+
+function Util.require(table, required)
+  for _, requiredField in ipairs(required) do
+    if table[requiredField] == nil then
+      error(requiredField .. ' is required.')
+    end
+  end
+end
+
+function Util.sample(t)
+  return t[math.random(#t)]
 end
 
 -- Util.choose = function(cond, a, b)
@@ -100,10 +113,6 @@ end
 --       roll = roll - t.o
 --     end
 --   end
--- end
-
--- Util.sample = function(t)
---   return t[rng(#t)]
 -- end
 
 -- Util.sampleValidate = function(t, validateFunc)

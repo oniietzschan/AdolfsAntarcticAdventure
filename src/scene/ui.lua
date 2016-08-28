@@ -133,6 +133,7 @@ function Ui:drawHover()
   lg.setLineWidth(1)
 
   local info = nil
+  local name = nil
   local hp = nil
   local maxHp = nil
   local friendly = nil
@@ -142,6 +143,7 @@ function Ui:drawHover()
 
   if unit then
     info = unit:hover()
+    name = unit.name or ''
     hp = unit.hp
     maxHp = unit.maxHp
     friendly = unit:isFriendly() and 'Friendly' or 'Unfriendly'
@@ -156,6 +158,9 @@ function Ui:drawHover()
   end
 
   if info.name then
+    if name then
+      info.name = info.name .. ' - ' .. name
+    end
     self:drawTextShadow(info.name, 5, 260)
   end
 

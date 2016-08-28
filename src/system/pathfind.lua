@@ -11,7 +11,12 @@ function PF:getMoveablePositions(unit)
   }
 
   local map = unit.tile.map
-  local finder = self:getPathfinder(map)
+  local finder = self:getPathfinder(
+    map,
+    function(tile)
+      return tile.unit and tile.unit:isFriendly() == false
+    end
+  )
 
   for _, destTile in pairs(map.tiles) do
     -- Define start and goal locations coordinates
@@ -35,30 +40,8 @@ function PF:getMoveablePositions(unit)
   return moveablePositions
 end
 
-function PF:getPathfinder(map, type)
-  local mapData = {}
-
-  for y = 0, MAP_TILES_Y - 1 do
-    local line = {}
-    for x = 0, MAP_TILES_X - 1 do
-      local tile = map.tiles[pos(x, y)]
-      local solid = tile:isPassable() == false or (tile.unit and tile.unit:isFriendly() == false)
-
-      table.insert(line, solid and 1 or 0)
-    end
-    table.insert(mapData, line)
-  end
-
-  local grid = Grid(mapData)
-
-  local finder = Pathfinder(grid, 'JPS', walkable)
-  finder:setMode('ORTHOGONAL')
-
-  return finder
-end
-
-function PF:getPath(tileStart, tileEnd)
-  local finder = self:getPathfinder(tileStart.map)
+function PF:getPath(tileStart, tileEnd, filter)
+  local finder = self:getPathfinder(tileStart.map, filter)
 
   local startX, startY = tileStart.x + 1, tileStart.y + 1
   local endX, endY = tileEnd.x + 1, tileEnd.y + 1
@@ -66,7 +49,7 @@ function PF:getPath(tileStart, tileEnd)
   local path = finder:getPath(startX, startY, endX, endY)
 
   if path == nil then
-    error('no path here... baka...')
+    return nil
   end
 
   return self:pathOneToZero(path)
@@ -79,6 +62,28 @@ function PF:pathOneToZero(path)
   end
 
   return path
+end
+
+function PF:getPathfinder(map, filter)
+  local mapData = {}
+
+  for y = 0, MAP_TILES_Y - 1 do
+    local line = {}
+    for x = 0, MAP_TILES_X - 1 do
+      local tile = map.tiles[pos(x, y)]
+      local solid = tile:isPassable() == false or (filter and filter(tile))
+
+      table.insert(line, solid and 1 or 0)
+    end
+    table.insert(mapData, line)
+  end
+
+  local grid = Grid(mapData)
+
+  local finder = Pathfinder(grid, 'JPS', walkable)
+  finder:setMode('ORTHOGONAL')
+
+  return finder
 end
 
 function PF:test(unit)

@@ -205,6 +205,8 @@ function Game:performAttack(attacker, defender)
 
   if defender.hp == 0 then
     defender:remove()
+  else
+    defender:shake({intensity = 2, duration = 0.6})
   end
 end
 
@@ -289,7 +291,13 @@ function Game:moveEnemies()
       -- 1A. Get paths to all allies
       for _, ally in ipairs(allies) do
         local path = Pathfind:getPath(enemy.tile, ally.tile)
-        table.insert(data.unitPaths, path)
+        if path then
+          table.insert(data.unitPaths, path)
+        end
+      end
+
+      if #data.unitPaths == 0 then
+        error('No paths?? WTF')
       end
 
       -- 1B. Sort paths internally by distance ASC

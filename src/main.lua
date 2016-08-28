@@ -25,6 +25,8 @@ Mountain      = require 'map.tile.mountain'
 SteelMountain = require 'map.tile.steel_mountain'
 VrilHarvester = require 'map.tile.vril_harvester'
 
+Shake = require 'map.unit.trait.shake'
+
 Unit             = require 'map.unit.unit'
 Enemy            = require 'map.unit.enemy'
 Agarthan         = require 'map.unit.agarthan'

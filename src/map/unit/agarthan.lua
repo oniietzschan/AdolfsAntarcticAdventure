@@ -9,6 +9,16 @@ function C:initialize(...)
   self.movementRange = 2
 end
 
+function C:getRandomName()
+  return Util.sample({
+    'Konata',
+    'Nekomata',
+    'Satin Tights',
+    'Zorg',
+    'Zuul',
+  })
+end
+
 function C:hover()
   return {
     name = 'Agarthan',

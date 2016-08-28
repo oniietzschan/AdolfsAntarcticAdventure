@@ -1,6 +1,12 @@
 local C = class('Unit')
 
+C:include(Shake)
+
 function C:initialize()
+  if self.getRandomName then
+    self.name = self:getRandomName()
+  end
+
   self:setMoved(false)
   self:setAttacked(false)
 end
@@ -21,6 +27,9 @@ function C:draw(x, y)
   end
 
   lg.setColor(color)
+
+  x = x + self:shakeGetOffset()
+  y = y + self:shakeGetOffset()
 
   self.sprite:draw(x, y)
 end

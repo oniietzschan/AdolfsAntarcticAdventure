@@ -18,8 +18,13 @@
     - After cancelling attack, if next to enemy, should still be able to attack. (If not next to enemy, end unit turn as before.)
   - Animations
     - Animations During Attack
+      -- Shake
+      - Display Damage As Number
     - Animations During Movement
     - Animations During Enemy Turn
+      -- Attack
+      - Move
+      - Not everything all happening at once
   - Units
     - Vril Flying Machine
       - Sprite
@@ -45,7 +50,6 @@
 
 
 
-
 - Suki
   - Generate Cute Names For Units
   - More Flavour Text
@@ -55,6 +59,8 @@
     - Panzer
   - Alternate Sprites
     - Different Mountains
+  - Graphical Polish
+    - Tween Unit bounce when spawned
 
 
 
