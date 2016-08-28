@@ -171,11 +171,11 @@ function Map:setTile(x, y, tile)
   self.tiles[x .. ',' .. y] = tile
 end
 
-function Map:getAllUnits()
+function Map:filterUnits(filter)
   local units = {}
 
   for _, tile in pairs(self.tiles) do
-    if tile.unit then
+    if tile.unit and filter(tile.unit) then
       table.insert(units, tile.unit)
     end
   end

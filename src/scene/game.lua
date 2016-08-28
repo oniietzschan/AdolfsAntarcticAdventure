@@ -122,14 +122,25 @@ function Game:tryToExecuteMove()
   self:performMove(unit, tile)
 
   -- Check if Units are nearby, and switch to attack mode if they are.
-  local enemiesOnlyFunc = function(u) return u:isFriendly() == false end
-  local unitsInRange = self:getUnits(unit, unit:getAttackRange(), enemiesOnlyFunc)
-  if #unitsInRange >= 1 then
+  local enemyUnitsInRange = self.map:filterUnits(function(u)
+    if u:isFriendly() then
+      return false
+    end
+
+    local distance = math.abs(u.tile.x - unit.tile.x) + math.abs(u.tile.y - unit.tile.y)
+    if distance > unit:getAttackRange() then
+      return false
+    end
+
+    return true
+  end)
+  if #enemyUnitsInRange >= 1 then
+    -- Enemies are in range, so switch to attack mode!! FAITO!!
     self:setMode(ATTACK)
     self:clearMoveOkay()
 
     -- Highlight targets in Red, and mark them as "Move" Okay
-    for _, unit in ipairs(unitsInRange) do
+    for _, unit in ipairs(enemyUnitsInRange) do
       self.moveOkay[pos(unit.tile.x, unit.tile.y)] = true
 
       self.map:setColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_RED)
@@ -143,19 +154,6 @@ function Game:tryToExecuteMove()
   end
 
   return true
-end
-
-function Game:getUnits(subject, maxDistance, filter)
-  local units = {}
-
-  for _, unit in ipairs(self.map:getAllUnits()) do
-    local distance = math.abs(subject.tile.x - unit.tile.x) + math.abs(subject.tile.y - unit.tile.y)
-    if unit ~= subject and distance <= maxDistance and filter(unit) then
-      table.insert(units, unit)
-    end
-  end
-
-  return units
 end
 
 function Game:tryToExecuteAttack()
