@@ -21,14 +21,16 @@ Sprite   = require 'system.sprite'
 
 Map  = require 'map.map'
 
-Tile           = require 'map.tile.tile'
-Crystal        = require 'map.tile.crystal'
-Mine           = require 'map.tile.mine'
-Mountain       = require 'map.tile.mountain'
-VrilHarvester  = require 'map.tile.vril_harvester'
+Tile          = require 'map.tile.tile'
+Crystal       = require 'map.tile.crystal'
+Mine          = require 'map.tile.mine'
+Mountain      = require 'map.tile.mountain'
+SteelMountain = require 'map.tile.steel_mountain'
+VrilHarvester = require 'map.tile.vril_harvester'
 
-Unit   = require 'map.unit.unit'
-Panzer = require 'map.unit.panzer'
+Unit             = require 'map.unit.unit'
+AgarthanMonolith = require 'map.unit.agarthan_monolith'
+Panzer           = require 'map.unit.panzer'
 
 Button = require 'ui.button'
 

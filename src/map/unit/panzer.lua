@@ -12,14 +12,10 @@ function C:initialize()
   self.flying = false
 end
 
-function C:getDefaultAnimation()
-  return 'active'
-end
-
 function C:hover()
   return {
     name = 'Black Order Panzerkampfwagen',
-    gameplay = 'Friendly land unit. ' .. self.hp .. ' out of ' .. self.maxHp .. ' hp.',
+    gameplay = 'Friendly land unit.',
     flavour = 'A precision-crafted machine designed to destroy Venusian serpent men.',
   }
 end

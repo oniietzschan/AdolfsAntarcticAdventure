@@ -25,15 +25,15 @@ function Map:initialize()
 end
 
 local mapData = [[
-^^^^......
-^^....p..*
+^^^^...^^^
+^$......|^
 ..........
-..p.......
+..p.*.....
 ..^...^^^.
-....^^^^..
+....$^^^..
 ....p.....
 ..........
-^....*.^^^
+^....*.^$^
 ^^..^^^^^^
 ]]
 
@@ -61,8 +61,12 @@ function Map:load()
 
       if     char == '^' then
         class = Mountain
+      elseif char == '$' then
+        class = SteelMountain
       elseif char == '*' then
         class = Crystal
+      elseif char == '|' then
+        unitClass = AgarthanMonolith
       elseif char == 'p' then
         unitClass = Panzer
       end

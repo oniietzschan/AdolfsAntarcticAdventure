@@ -50,6 +50,8 @@ function Game:tryToBuild()
   then
     return false
   end
+
+  -- OK! Perform Build
   self.map:setTile(
     self.map.selectedTile.x,
     self.map.selectedTile.y,
@@ -57,6 +59,8 @@ function Game:tryToBuild()
   )
 
   self.map:storeOrderedTiles()
+
+  self:setMode(NORMAL)
 
   return true
 end
@@ -131,6 +135,7 @@ function Game:setMode(mode)
   self.mode = mode
 
   if self.mode == NORMAL then
+    self.toBuild = nil
     self:clearMoveOkay()
     self.moveSubject = nil
   end
@@ -166,48 +171,5 @@ end
 function Game:removeVrilForce(i)
   self.vril = self.vril - i
 end
-
--- function Game:initWorld()
---   self._entities = {}
-
---   self.world = bump.newWorld(16)
---   world = self.world
-
---   local factory = MapFactory({world = self.world})
---   factory:generateLevel()
--- end
-
--- function Game:initCamera()
---   self.camera = Camera(self)
-
---   self.camera:newLayer('background')
---   self.camera:newLayer('entity')
---   self.camera:newLayer('foreground')
-
---   self._debug_draw_bump = false
--- end
-
--- function Game:addEntity(ent)
---   self:addIdIfMissing(ent)
-
---   self._entities[ent.id] = ent
-
---   self.camera:addToLayer(ent.layer, ent)
--- end
-
--- function Game:addIdIfMissing(ent)
---   if ent.id then
---     return
---   end
-
---   ent.id = self.nextId
---   self.nextId = self.nextId + 1
--- end
-
--- function Game:removeEntity(ent)
---   self._entities[ent.id] = nil
-
---   self.camera:removeFromLayer(ent.layer, ent)
--- end
 
 return Game

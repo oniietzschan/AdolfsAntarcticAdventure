@@ -10,6 +10,11 @@ sprite.buttonBuildMine = img('button_build_mine')
 sprite.buttonBuildVrilHarvester = img('button_build_vril_harvester')
 sprite.buttonEndTurn = img('button_end_turn')
 
+sprite.agarthanMonolith = Mokyu.newSprite(img('agarthan_monolith'), 32, 77)
+  :setOriginRect(0, 50, 32, 17)
+  :addAnimation('active', {1})
+  :addAnimation('stopped', {1})
+
 sprite.panzer = Mokyu.newSprite(img('panzer'), 32, 45)
   :setOriginRect(0, 18, 32, 17)
   :addAnimation('active', {
@@ -23,8 +28,10 @@ sprite.tiles = Mokyu.newSprite(img('tiles'), 32, 77)
   :addAnimation('tundra', {1})
   :addAnimation('mountain', {2})
   :addAnimation('crystal', {3, 4})
-  :addAnimation('mine', {5})
-  :addAnimation('vrilHarvester', {6})
+  :addAnimation('vrilHarvester', {5})
+  :addAnimation('steelMountain', {6})
+  :addAnimation('mine', {7})
+  -- :addAnimation('agarthanMonolith', {8})
 
 
 return sprite

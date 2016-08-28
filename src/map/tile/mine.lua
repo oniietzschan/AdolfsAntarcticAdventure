@@ -1,7 +1,7 @@
 local C = class('Mine', Tile)
 
 function C.validateTile(tile)
-  return tile:isInstanceOf(Mountain)
+  return tile:isInstanceOf(SteelMountain)
 end
 
 function C.validateResources()
