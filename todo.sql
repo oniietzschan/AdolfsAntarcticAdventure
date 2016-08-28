@@ -39,7 +39,7 @@
         -- Track HasMoved
         -- Physical Movement
         -- Pathfinding
-      -- Attacking
+      - Attacking
         -- Highlight Attackable Area
         -- Move Closer
           -- Move Closer
@@ -47,10 +47,11 @@
         -- Physical Attack
           -- Remove HP
           -- Remove Unit if destroyed
+        - Need ability to hold ground and attack
   - Enemy
-    - Agarthan Grunt
-      - Sprite
-      - Generate On Map
+    - Agarthan
+      -- Sprite
+      -- Generate On Map
       - AI
     -- Agarthan Polar Monolith
       -- Sprite
@@ -64,6 +65,8 @@
     -- After Monolith destroyed, load next map
   -- UI
     -- Show Unit HP
+  - Tiles
+    - Forests (provide cover)
 
 
 - Daisuki

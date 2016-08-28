@@ -40,13 +40,13 @@ local maps = {
 -- ]],
 [[
 ^^^^...^^^
-^$...pp.|^
-......p...
-..p.*.....
+^$......|^
+...a......
+....*.....
 ..^...^^^.
-....$^^^..
-....p.....
-..........
+.p..$^^^..
+.......a..
+..p.......
 ^....*.^$^
 ^^..^^^^^^
 ]],
@@ -95,6 +95,8 @@ function Map:load()
         class = Crystal
       elseif char == '|' then
         unitClass = AgarthanMonolith
+      elseif char == 'a' then
+        unitClass = Agarthan
       elseif char == 'p' then
         unitClass = Panzer
       end

@@ -143,7 +143,7 @@ function Game:tryToExecuteMove()
     for _, unit in ipairs(enemyUnitsInRange) do
       self.moveOkay[pos(unit.tile.x, unit.tile.y)] = true
 
-      self.map:setColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_RED)
+      self.map:setColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_REALLY_RED)
       self.map:setUnitColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_REALLY_RED)
     end
 
@@ -249,7 +249,15 @@ end
 function Game:endTurn()
   self:setMode(NORMAL)
 
+  self:moveEnemies()
+
   self.map:endTurn()
+end
+
+function Game:moveEnemies()
+  local enemies = self.map:filterUnits(function(u) return u:isFriendly() == false end)
+  for _,v in ipairs(enemies) do
+  end
 end
 
 function Game:addSteel(i)

@@ -10,6 +10,17 @@ sprite.buttonBuildMine = img('button_build_mine')
 sprite.buttonBuildVrilHarvester = img('button_build_vril_harvester')
 sprite.buttonEndTurn = img('button_end_turn')
 
+sprite.agarthan = Mokyu.newSprite(img('agarthan'), 32, 55)
+  :setOriginRect(0, 28, 32, 17)
+  :addAnimation('active', {
+    frequency = 0.25,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 4, 4, 4, 4, 4, 5, 5, 4, 4, 4, 3,
+  })
+  :addAnimation('stopped', {
+    frequency = 0.9,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2,
+  })
+
 sprite.agarthanMonolith = Mokyu.newSprite(img('agarthan_monolith'), 32, 77)
   :setOriginRect(0, 50, 32, 17)
   :addAnimation('active', {1})

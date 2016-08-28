@@ -29,6 +29,7 @@ SteelMountain = require 'map.tile.steel_mountain'
 VrilHarvester = require 'map.tile.vril_harvester'
 
 Unit             = require 'map.unit.unit'
+Agarthan         = require 'map.unit.agarthan'
 AgarthanMonolith = require 'map.unit.agarthan_monolith'
 Panzer           = require 'map.unit.panzer'
 
