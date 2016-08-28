@@ -48,30 +48,30 @@
           -- Remove HP
           -- Remove Unit if destroyed
         - Need ability to hold ground and attack
-  - Enemy
-    - Agarthan
+  -- Enemy
+    -- Agarthan
       -- Sprite
       -- Generate On Map
-      - AI
+      -- AI
     -- Agarthan Polar Monolith
       -- Sprite
       -- Convert To Unit
       -- Can Be Destoyed
-  - Turn
+  -- Turn
     -- Generate Resources
     -- Allow Units To Move Again
-    - Enemy AI
+    -- Enemy AI
   -- Gameflow
     -- After Monolith destroyed, load next map
   -- UI
     -- Show Unit HP
-  - Tiles
-    - Forests (provide cover)
 
 
 - Daisuki
+  - Sound
   - Music
-  -- Gameplay - Fundamental
+  - Gameplay - Fundamental
+    - Enemies should determine whether target still exists before moving towards it
     -- Should be able to move 1-2 spaces, then attack. To allow for fighting in close quarters
   - Gameplay - Quality Of Life
     - Animations During Attack
@@ -83,6 +83,8 @@
       - On Map
       - Movement
         - Uses Vril Force
+  - Tiles
+    - Forests (provide cover)
   -- Hover for info
     -- Name
     -- Gameplay Info
@@ -102,6 +104,7 @@
 
 
 - Suki
+  - Generate Cute Names For Units
   - More Flavour Text
     - Allow Wrapping?
   - Story

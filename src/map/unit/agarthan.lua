@@ -1,22 +1,12 @@
-local C = class('Agarthan', Unit)
+local C = class('Agarthan', Enemy)
 
 function C:initialize(...)
   self.sprite = Sprite.agarthan:newInstance()
 
-  Unit.initialize(self)
+  Enemy.initialize(self)
 
-  self.hp = 5
-  self.maxHp = 5
-  self.friendly = false
+  self.attack = 3
   self.movementRange = 2
-  self.flying = false
-end
-
-function C:remove()
-  Unit.remove(self)
-
-  print('game.mapFinished = true')
-  game.mapFinished = true
 end
 
 function C:hover()

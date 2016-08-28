@@ -66,6 +66,7 @@ end
 
 function C:endTurn()
   self:setMoved(false)
+  self:setAttacked(false)
 end
 
 function C:canMove()
@@ -83,7 +84,7 @@ function C:setMoved(hasMoved)
 end
 
 function C:canAttack()
-  return self.hasMoved == false
+  return self.hasAttacked == false
 end
 
 function C:setAttacked(hasAttacked)

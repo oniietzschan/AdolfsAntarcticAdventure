@@ -1,15 +1,11 @@
-local C = class('AgarthanMonolith', Unit)
+local C = class('AgarthanMonolith', Enemy)
 
 function C:initialize(...)
   self.sprite = Sprite.agarthanMonolith:newInstance()
 
-  Unit.initialize(self)
+  Enemy.initialize(self)
 
-  self.hp = 5
-  self.maxHp = 5
-  self.friendly = false
   self.movementRange = 0
-  self.flying = false
 end
 
 function C:remove()
@@ -25,6 +21,14 @@ function C:hover()
     gameplay = 'Destroy this to proceed.',
     flavour = "An obsidian obelisk with the power to shift the poles of the Earth.",
   }
+end
+
+function C:canMove()
+  return false
+end
+
+function C:canAttack()
+  return false
 end
 
 return C

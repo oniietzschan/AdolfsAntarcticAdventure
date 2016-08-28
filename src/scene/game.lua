@@ -41,16 +41,16 @@ function Game:nextMap()
 end
 
 function Game:handleMapClick()
-  if self.map.selectedTile == nil
-    or Input.pressed(LEFT_CLICK) == false
-  then
+  if Input.pressed(LEFT_CLICK) == false then
     return
   end
 
-  if self:tryToBuild()         then return end
-  if self:tryToStartMove()     then return end
-  if self:tryToExecuteMove()   then return end
-  if self:tryToExecuteAttack() then return end
+  if self.map.selectedTile then
+    if self:tryToBuild()         then return end
+    if self:tryToStartMove()     then return end
+    if self:tryToExecuteMove()   then return end
+    if self:tryToExecuteAttack() then return end
+  end
 
   self:setMode(NORMAL)
 end
@@ -107,17 +107,16 @@ function Game:tryToExecuteMove()
     return false
   end
 
+  local unit = self.moveSubject
   local tile = self.map.selectedTile
 
   if tile == nil or self:isMoveOkay(tile.x, tile.y) == false then
     return false
   end
 
-  if self.map:getUnit(tile.x, tile.y) then
+  if self.map:getUnit(tile.x, tile.y) and self.map:getUnit(tile.x, tile.y) ~= unit then
     error('Destination has a unit??')
   end
-
-  local unit = self.moveSubject
 
   self:performMove(unit, tile)
 
@@ -157,7 +156,9 @@ function Game:tryToExecuteMove()
 end
 
 function Game:tryToExecuteAttack()
-  if self.mode ~= ATTACK or self.moveSubject == nil then
+  local unit = self.moveSubject
+
+  if self.mode ~= ATTACK or unit == nil then
     return false
   end
 
@@ -167,22 +168,16 @@ function Game:tryToExecuteAttack()
     return false
   end
 
-  self:performAttack(
-    self.moveSubject,
-    self.map:getUnit(tile.x, tile.y)
-  )
+  self:performAttack(unit, self.map:getUnit(tile.x, tile.y))
+
+  self:setMode(NORMAL)
+  unit:setAttacked(true)
+  unit:setMoved(true) -- in case of standing ground before attack
+
+  return true
 end
 
 function Game:performAttack(attacker, defender)
-  -- -- Move attacker closer to defender if needed.
-  -- local path = Pathfind:getPath(attacker.tile, defender.tile)
-
-  -- for node, count in path:nodes() do
-  --   if count == path:getLength() then -- lol...
-  --     self:performMove(attacker, self.map:getTile(node.x, node.y))
-  --   end
-  -- end
-
   -- Deal damage.
   defender:takeDamage(attacker:getAttack())
 
@@ -192,10 +187,12 @@ function Game:performAttack(attacker, defender)
 end
 
 function Game:performMove(unit, destTile)
+  if unit.tile.x ~= destTile.x or unit.tile.y ~= destTile.y then
+    unit:setMoved(true)
+  end
+
   self.map:setUnit(unit.tile.x, unit.tile.y, nil)
   self.map:setUnit(destTile.x, destTile.y, unit)
-
-  unit:setMoved(true)
 end
 
 function Game:isMoveOkay(x, y)
@@ -219,8 +216,9 @@ function Game:clearMoveOkay()
 end
 
 function Game:setMode(mode)
-  if self.mode == ATTACK and self.moveSubject:canAttack() then
-
+  -- If cancelling attack after moving a unit, that unit should lose it's attack.
+  if self.mode == ATTACK and self.moveSubject:canMove() == false and self.moveSubject:canAttack() then
+    self.moveSubject:setAttacked(true)
   end
 
   self.mode = mode
@@ -235,17 +233,6 @@ function Game:setMode(mode)
   end
 end
 
-function Game:draw()
-  self:fillBackgroundColor()
-
-  self.map:draw()
-end
-
-function Game:fillBackgroundColor()
-  lg.setColor(COLOR_BACKGROUND)
-  lg.rectangle('fill', 0, 0, CAMERA_WIDTH, CAMERA_HEIGHT)
-end
-
 function Game:endTurn()
   self:setMode(NORMAL)
 
@@ -255,9 +242,85 @@ function Game:endTurn()
 end
 
 function Game:moveEnemies()
+  local allies  = self.map:filterUnits(function(u) return u:isFriendly() == true end)
   local enemies = self.map:filterUnits(function(u) return u:isFriendly() == false end)
-  for _,v in ipairs(enemies) do
+  local aiData = {}
+
+  if #allies == 0 or #enemies == 0 then
+    return
   end
+
+  -- 1. Determine nearest target for each enemy
+  for _, enemy in ipairs(enemies) do
+    if enemy:canMove() and enemy:canAttack() then
+      local data = {
+        enemy = enemy,
+        unitPaths = {},
+      }
+      table.insert(aiData, data)
+
+      -- 1A. Get paths to all allies
+      for _, ally in ipairs(allies) do
+        local path = Pathfind:getPath(enemy.tile, ally.tile)
+        table.insert(data.unitPaths, path)
+      end
+
+      -- 1B. Sort paths internally by distance ASC
+      table.sort(data.unitPaths, function(a, b) return a:getLength() < b:getLength() end)
+
+      -- 1C. Store shortest path
+      data.closestUnitDist = data.unitPaths[1]:getLength()
+    end
+  end
+
+  -- 2. Enemies move in order of proximity
+  table.sort(aiData, function(a, b) return a.closestUnitDist < b.closestUnitDist end)
+  for _, data in ipairs(aiData) do
+    print(data.enemy, data.closestUnitDist) -- debug
+
+    self:moveEnemy(data)
+    self:attackWithEnemy(data.enemy)
+  end
+end
+
+function Game:moveEnemy(data)
+  local enemy = data.enemy
+
+  print(enemy:getMovementRange())
+
+  for _, path in ipairs(data.unitPaths) do
+    -- TODO: check if ally at end of path still exists!!
+
+    -- Move as far as possible
+    for node, count in path:nodes() do
+      if count > enemy:getMovementRange() + 1 then
+        return
+      end
+
+      local tile =  self.map:getTile(node.x, node.y)
+      if tile.unit == nil then
+        self:performMove(enemy, tile)
+      end
+
+      print(('Step: %d - x: %d - y: %d'):format(count, node.x, node.y))
+    end
+
+    -- exit if successfully followed path
+    return true
+  end
+end
+
+function Game:attackWithEnemy(enemy)
+  local enemyUnitsInRange = self.map:filterUnits(function(u)
+    local distance = math.abs(u.tile.x - enemy.tile.x) + math.abs(u.tile.y - enemy.tile.y)
+
+    return u:isFriendly() and distance <= enemy:getAttackRange()
+  end)
+  if #enemyUnitsInRange == 0 then
+    return
+  end
+
+  self:performAttack(enemy, enemyUnitsInRange[1])
 end
 
 function Game:addSteel(i)
@@ -274,6 +337,17 @@ end
 
 function Game:removeVrilForce(i)
   self.vril = self.vril - i
+end
+
+function Game:draw()
+  self:fillBackgroundColor()
+
+  self.map:draw()
+end
+
+function Game:fillBackgroundColor()
+  lg.setColor(COLOR_BACKGROUND)
+  lg.rectangle('fill', 0, 0, CAMERA_WIDTH, CAMERA_HEIGHT)
 end
 
 return Game

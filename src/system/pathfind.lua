@@ -6,7 +6,9 @@ local Pathfinder = require 'lib.jumper.pathfinder'
 local PF = {}
 
 function PF:getMoveablePositions(unit)
-  local moveablePositions = {}
+  local moveablePositions = {
+    {x = unit.tile.x, y = unit.tile.y},
+  }
 
   local map = unit.tile.map
   local finder = self:getPathfinder(map)
@@ -55,29 +57,29 @@ function PF:getPathfinder(map, type)
   return finder
 end
 
--- function PF:getPath(tileStart, tileEnd)
---   local finder = self:getPathfinder(tileStart.map)
+function PF:getPath(tileStart, tileEnd)
+  local finder = self:getPathfinder(tileStart.map)
 
---   local startX, startY = tileStart.x + 1, tileStart.y + 1
---   local endX, endY = tileEnd.x + 1, tileEnd.y + 1
+  local startX, startY = tileStart.x + 1, tileStart.y + 1
+  local endX, endY = tileEnd.x + 1, tileEnd.y + 1
 
---   local path = finder:getPath(startX, startY, endX, endY)
+  local path = finder:getPath(startX, startY, endX, endY)
 
---   if path == nil then
---     error('no path here... baka...')
---   end
+  if path == nil then
+    error('no path here... baka...')
+  end
 
---   return self:pathOneToZero(path)
--- end
+  return self:pathOneToZero(path)
+end
 
--- function PF:pathOneToZero(path)
---   for node, count in path:nodes() do
---     node.x = node.x - 1
---     node.y = node.y - 1
---   end
+function PF:pathOneToZero(path)
+  for node, count in path:nodes() do
+    node.x = node.x - 1
+    node.y = node.y - 1
+  end
 
---   return path
--- end
+  return path
+end
 
 function PF:test(unit)
   local map = unit.tile.map
