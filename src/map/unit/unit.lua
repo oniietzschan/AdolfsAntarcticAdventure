@@ -2,6 +2,7 @@ local C = class('Unit')
 
 function C:initialize()
   self:setMoved(false)
+  self:setAttacked(false)
 end
 
 function C:remove()
@@ -15,7 +16,7 @@ end
 function C:draw(x, y)
   local color = self.tile.map:getUnitColor(self.tile.x, self.tile.y) or COLOR_WHITE
 
-  if self:isFriendly() and self:isAllowedToMove() == false then
+  if self:isFriendly() and self:canMove() == false and self:canAttack() == false then
     color = COLOR_HIGHLIGHT_DARK_GREY
   end
 
@@ -27,6 +28,11 @@ end
 function C:getAttack()
   return self.attack or 0
 end
+
+function C:getAttackRange()
+  return self.attackRange or 1
+end
+
 
 function C:takeDamage(dmg)
   if dmg <= 0 then
@@ -43,7 +49,6 @@ end
 function C:isFriendly()
   return self.friendly == true
 end
-
 function C:getMovementRange()
   return self.movementRange
 end
@@ -63,18 +68,28 @@ function C:endTurn()
   self:setMoved(false)
 end
 
-function C:isAllowedToMove()
-  return self.canMove == true
+function C:canMove()
+  return self.hasMoved == false
 end
 
 function C:setMoved(hasMoved)
-  self.canMove = hasMoved == false
+  self.hasMoved = hasMoved
 
-  if self.canMove then
+  if self.hasMoved == false then
     self.sprite
       :setAnimation('active')
       :setAnimationPosition(0)
-  else
+  end
+end
+
+function C:canAttack()
+  return self.hasMoved == false
+end
+
+function C:setAttacked(hasAttacked)
+  self.hasAttacked = hasAttacked
+
+  if self.hasAttacked then
     self.sprite:setAnimation('stopped')
   end
 end

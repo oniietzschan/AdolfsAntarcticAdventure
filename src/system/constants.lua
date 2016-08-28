@@ -75,6 +75,7 @@ MINUS = 'minus'
 PLUS = 'plus'
 QUIT = 'quit'
 
+ATTACK = 'attack'
 BUILD = 'build'
 MOVE = 'move'
 NORMAL = 'normal'

@@ -47,9 +47,10 @@ function Game:handleMapClick()
     return
   end
 
-  if self:tryToBuild()       then return end
-  if self:tryToStartMove()   then return end
-  if self:tryToExecuteMove() then return end
+  if self:tryToBuild()         then return end
+  if self:tryToStartMove()     then return end
+  if self:tryToExecuteMove()   then return end
+  if self:tryToExecuteAttack() then return end
 
   self:setMode(NORMAL)
 end
@@ -84,7 +85,7 @@ function Game:tryToStartMove()
 
   local unit = self.map.selectedTile.unit
 
-  if unit == nil or unit:isAllowedToMove() == false then
+  if unit == nil or unit:isFriendly() == false or unit:canMove() == false then
     return false
   end
 
@@ -101,22 +102,6 @@ function Game:tryToStartMove()
   return true
 end
 
-function Game:setMoveOkay(positions)
-  self:clearMoveOkay()
-
-  for _, p in ipairs(positions) do
-    self.moveOkay[pos(p.x, p.y)] = true
-
-    if self.map:getUnit(p.x, p.y) then -- Unit on position: ATTACK!
-      self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_RED)
-      self.map:setUnitColor(p.x, p.y, COLOR_HIGHLIGHT_REALLY_RED)
-
-    else -- Position free: MOVE!
-      self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_BLUE)
-    end
-  end
-end
-
 function Game:tryToExecuteMove()
   if self.mode ~= MOVE or self.moveSubject == nil then
     return false
@@ -128,36 +113,77 @@ function Game:tryToExecuteMove()
     return false
   end
 
-  local unit = self.moveSubject
-  local destUnit = self.map:getUnit(tile.x, tile.y)
-
-  -- OK! Perform Attack And/Or Move
-  if destUnit then
-    self:performAttack(unit, destUnit)
-  else
-    self:performMove(unit, tile)
+  if self.map:getUnit(tile.x, tile.y) then
+    error('Destination has a unit??')
   end
 
-  unit:setMoved(true)
+  local unit = self.moveSubject
 
-  self:setMode(NORMAL)
+  self:performMove(unit, tile)
+
+  -- Check if Units are nearby, and switch to attack mode if they are.
+  local enemiesOnlyFunc = function(u) return u:isFriendly() == false end
+  local unitsInRange = self:getUnits(unit, unit:getAttackRange(), enemiesOnlyFunc)
+  if #unitsInRange >= 1 then
+    self:setMode(ATTACK)
+    self:clearMoveOkay()
+
+    -- Highlight targets in Red, and mark them as "Move" Okay
+    for _, unit in ipairs(unitsInRange) do
+      self.moveOkay[pos(unit.tile.x, unit.tile.y)] = true
+
+      self.map:setColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_RED)
+      self.map:setUnitColor(unit.tile.x, unit.tile.y, COLOR_HIGHLIGHT_REALLY_RED)
+    end
+
+  else
+    -- No units near destination, just end turn...
+    self:setMode(NORMAL)
+    unit:setAttacked(true)
+  end
 
   return true
 end
 
-function Game:isMoveOkay(x, y)
-  return self.moveOkay[pos(x, y)] == true
+function Game:getUnits(subject, maxDistance, filter)
+  local units = {}
+
+  for _, unit in ipairs(self.map:getAllUnits()) do
+    local distance = math.abs(subject.tile.x - unit.tile.x) + math.abs(subject.tile.y - unit.tile.y)
+    if unit ~= subject and distance <= maxDistance and filter(unit) then
+      table.insert(units, unit)
+    end
+  end
+
+  return units
+end
+
+function Game:tryToExecuteAttack()
+  if self.mode ~= ATTACK or self.moveSubject == nil then
+    return false
+  end
+
+  local tile = self.map.selectedTile
+
+  if tile == nil or self:isMoveOkay(tile.x, tile.y) == false then
+    return false
+  end
+
+  self:performAttack(
+    self.moveSubject,
+    self.map:getUnit(tile.x, tile.y)
+  )
 end
 
 function Game:performAttack(attacker, defender)
-  -- Move attacker closer to defender if needed.
-  local path = Pathfind:getPath(attacker.tile, defender.tile)
+  -- -- Move attacker closer to defender if needed.
+  -- local path = Pathfind:getPath(attacker.tile, defender.tile)
 
-  for node, count in path:nodes() do
-    if count == path:getLength() then -- lol...
-      self:performMove(attacker, self.map:getTile(node.x, node.y))
-    end
-  end
+  -- for node, count in path:nodes() do
+  --   if count == path:getLength() then -- lol...
+  --     self:performMove(attacker, self.map:getTile(node.x, node.y))
+  --   end
+  -- end
 
   -- Deal damage.
   defender:takeDamage(attacker:getAttack())
@@ -170,6 +196,21 @@ end
 function Game:performMove(unit, destTile)
   self.map:setUnit(unit.tile.x, unit.tile.y, nil)
   self.map:setUnit(destTile.x, destTile.y, unit)
+
+  unit:setMoved(true)
+end
+
+function Game:isMoveOkay(x, y)
+  return self.moveOkay[pos(x, y)] == true
+end
+
+function Game:setMoveOkay(positions)
+  self:clearMoveOkay()
+
+  for _, p in ipairs(positions) do
+    self.moveOkay[pos(p.x, p.y)] = true
+    self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_BLUE)
+  end
 end
 
 function Game:clearMoveOkay()
@@ -180,9 +221,16 @@ function Game:clearMoveOkay()
 end
 
 function Game:setMode(mode)
+  if self.mode == ATTACK and self.moveSubject:canAttack() then
+
+  end
+
   self.mode = mode
 
-  if self.mode == NORMAL then
+  if self.mode == ATTACK then
+    self:clearMoveOkay()
+
+  elseif self.mode == NORMAL then
     self.toBuild = nil
     self:clearMoveOkay()
     self.moveSubject = nil

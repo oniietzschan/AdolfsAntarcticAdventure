@@ -20,8 +20,7 @@ function PF:getMoveablePositions(unit)
     local destDistance = math.abs(startX - endX) + math.abs(startY - endY)
     local destUnit = map:getUnit(destTile.x, destTile.y)
 
-
-    if destDistance <= unit:getMovementRange() and (destUnit == nil or destUnit:isFriendly() == false) then
+    if destDistance <= unit:getMovementRange() and destUnit == nil then
       -- If Destination is valid, determine if path exists.
       local path = finder:getPath(startX, startY, endX, endY)
 
@@ -34,40 +33,16 @@ function PF:getMoveablePositions(unit)
   return moveablePositions
 end
 
-function PF:getPath(tileStart, tileEnd)
-  local finder = self:getPathfinder(tileStart.map)
-
-  local startX, startY = tileStart.x + 1, tileStart.y + 1
-  local endX, endY = tileEnd.x + 1, tileEnd.y + 1
-
-  local path = finder:getPath(startX, startY, endX, endY)
-
-  if path == nil then
-    error('no path here... baka...')
-  end
-
-  return self:pathOneToZero(path)
-end
-
-function PF:pathOneToZero(path)
-  for node, count in path:nodes() do
-    node.x = node.x - 1
-    node.y = node.y - 1
-  end
-
-  return path
-end
-
-function PF:getPathfinder(map)
+function PF:getPathfinder(map, type)
   local mapData = {}
 
   for y = 0, MAP_TILES_Y - 1 do
     local line = {}
     for x = 0, MAP_TILES_X - 1 do
       local tile = map.tiles[pos(x, y)]
-      local solid = tile:isPassable() and 0 or 1
+      local solid = tile:isPassable() == false or (tile.unit and tile.unit:isFriendly() == false)
 
-      table.insert(line, solid)
+      table.insert(line, solid and 1 or 0)
     end
     table.insert(mapData, line)
   end
@@ -79,6 +54,30 @@ function PF:getPathfinder(map)
 
   return finder
 end
+
+-- function PF:getPath(tileStart, tileEnd)
+--   local finder = self:getPathfinder(tileStart.map)
+
+--   local startX, startY = tileStart.x + 1, tileStart.y + 1
+--   local endX, endY = tileEnd.x + 1, tileEnd.y + 1
+
+--   local path = finder:getPath(startX, startY, endX, endY)
+
+--   if path == nil then
+--     error('no path here... baka...')
+--   end
+
+--   return self:pathOneToZero(path)
+-- end
+
+-- function PF:pathOneToZero(path)
+--   for node, count in path:nodes() do
+--     node.x = node.x - 1
+--     node.y = node.y - 1
+--   end
+
+--   return path
+-- end
 
 function PF:test(unit)
   local map = unit.tile.map

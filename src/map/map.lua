@@ -40,8 +40,8 @@ local maps = {
 -- ]],
 [[
 ^^^^...^^^
-^$....p.|^
-..........
+^$...pp.|^
+......p...
 ..p.*.....
 ..^...^^^.
 ....$^^^..
@@ -169,6 +169,18 @@ function Map:setTile(x, y, tile)
   tile.y = y
 
   self.tiles[x .. ',' .. y] = tile
+end
+
+function Map:getAllUnits()
+  local units = {}
+
+  for _, tile in pairs(self.tiles) do
+    if tile.unit then
+      table.insert(units, tile.unit)
+    end
+  end
+
+  return units
 end
 
 function Map:getUnit(x, y)

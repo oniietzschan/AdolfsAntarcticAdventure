@@ -14,7 +14,7 @@
   -- Resources
     -- display
   - Buildings
-    - Proximity
+    - Can only build in certain proximity to units
     -- Mine
       -- Sprite
       -- Button
@@ -29,13 +29,8 @@
       -- validate
         -- check that is crystal
         -- check for resources
-  - Units
-    - Vril Flying Machine
-      - Sprite
-      - On Map
-      - Movement
-        - Uses Vril Force
-    - Black Order Panzer
+  -- Units
+    -- Black Order Panzer
       -- Sprite
       -- On Map
       -- Movement
@@ -44,16 +39,19 @@
         -- Track HasMoved
         -- Physical Movement
         -- Pathfinding
-      - Attacking
+      -- Attacking
         -- Highlight Attackable Area
-        - Move Closer
-          - Handle When Closest Spot Is Not Free
-        - Physical Attack
+        -- Move Closer
+          -- Move Closer
+          -- Handle When Closest Spot Is Not Free
+        -- Physical Attack
           -- Remove HP
-          - Remove Unit if destroyed
-      - Can Build
+          -- Remove Unit if destroyed
   - Enemy
     - Agarthan Grunt
+      - Sprite
+      - Generate On Map
+      - AI
     -- Agarthan Polar Monolith
       -- Sprite
       -- Convert To Unit
@@ -70,10 +68,22 @@
 
 - Daisuki
   - Music
-  - Hover for info
+  -- Gameplay - Fundamental
+    -- Should be able to move 1-2 spaces, then attack. To allow for fighting in close quarters
+  - Gameplay - Quality Of Life
+    - Animations During Attack
+    - Animations During Movement
+    - Animations During Enemy Turn
+  - Units
+    - Vril Flying Machine
+      - Sprite
+      - On Map
+      - Movement
+        - Uses Vril Force
+  -- Hover for info
     -- Name
     -- Gameplay Info
-    - Flavour Text
+    -- Flavour Text
     -- Hover Over Units
   - Fix Shitty Sprites
     - Mine
@@ -89,6 +99,8 @@
 
 
 - Suki
+  - More Flavour Text
+    - Allow Wrapping?
   - Story
   - Meh Sprites
     - Panzer
