@@ -12,8 +12,11 @@ function C:initialize(...)
   self.flying = false
 end
 
-function C:getDefaultAnimation()
-  return 'agarthanMonolith'
+function C:remove()
+  Unit.remove(self)
+
+  print('game.mapFinished = true')
+  game.mapFinished = true
 end
 
 function C:hover()

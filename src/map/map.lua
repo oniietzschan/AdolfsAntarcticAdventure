@@ -22,22 +22,11 @@ function Map:initialize()
   self:storeOrderedTiles()
 
   self:clearColors()
+  self:clearUnitColors()
 end
 
-local mapData = [[
-^^^^...^^^
-^$......|^
-..........
-..p.*.....
-..^...^^^.
-....$^^^..
-....p.....
-..........
-^....*.^$^
-^^..^^^^^^
-]]
-
--- mapData = [[
+local maps = {
+-- [[
 -- ^^^^..pppp
 -- ^^....*...
 -- ......^.^^
@@ -48,10 +37,49 @@ local mapData = [[
 -- ..........
 -- ^...p*.^^^
 -- ^^..^^^^^^
--- ]]
+-- ]],
+[[
+^^^^...^^^
+^$....p.|^
+..........
+..p.*.....
+..^...^^^.
+....$^^^..
+....p.....
+..........
+^....*.^$^
+^^..^^^^^^
+]],
+[[
+^^^^^^^^^^
+^$....p.|^
+^........^
+^..p.*...^
+^..^...^^^
+^....$^^^^
+^....p...^
+^........^
+^....*.^$^
+^^^^^^^^^^
+]],
+[[
+..........
+..........
+.pp..pppp.
+p......p..
+p......p..
+p.pp...p..
+p..p.p.p..
+ pp...p...
+..........
+..........
+]],
+}
 
 function Map:load()
   local y = 0
+
+  local mapData = maps[game.currentMap]
 
   for line in string.gmatch(mapData, "(.-)\n") do
     for x = 0, #line - 1 do
@@ -179,8 +207,20 @@ function Map:setColor(x, y, color)
   self.tileColors[pos(x, y)] = color
 end
 
+function Map:getUnitColor(x, y)
+  return self.unitColors[pos(x, y)] or COLOR_WHITE
+end
+
+function Map:setUnitColor(x, y, color)
+  self.unitColors[pos(x, y)] = color
+end
+
 function Map:clearColors()
   self.tileColors = {}
+end
+
+function Map:clearUnitColors()
+  self.unitColors = {}
 end
 
 function Map:endTurn()

@@ -4,20 +4,44 @@ function C:initialize()
   self:setMoved(false)
 end
 
+function C:remove()
+  self.tile:setUnit(nil)
+end
+
 function C:update(dt)
   self.sprite:animate(dt)
 end
 
 function C:draw(x, y)
-  local color = (self:isAllowedToMove() == false) and COLOR_HIGHLIGHT_DARK_GREY or COLOR_WHITE
+  local color = self.tile.map:getUnitColor(self.tile.x, self.tile.y) or COLOR_WHITE
 
-  lg.setColor((self.tile == self.tile.map.selectedTile) and COLOR_HIGHLIGHT_GREY or color)
+  if self:isFriendly() and self:isAllowedToMove() == false then
+    color = COLOR_HIGHLIGHT_DARK_GREY
+  end
+
+  lg.setColor(color)
 
   self.sprite:draw(x, y)
 end
 
+function C:getAttack()
+  return self.attack or 0
+end
+
+function C:takeDamage(dmg)
+  if dmg <= 0 then
+    error('damage should be positive')
+  end
+
+  self.hp = self.hp - dmg
+
+  if self.hp < 0 then
+    self.hp = 0
+  end
+end
+
 function C:isFriendly()
-  return self.isFriendly == true
+  return self.friendly == true
 end
 
 function C:getMovementRange()

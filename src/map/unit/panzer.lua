@@ -7,6 +7,7 @@ function C:initialize()
 
   self.hp = 5
   self.maxHp = 5
+  self.attack = 3
   self.friendly = true
   self.movementRange = 3
   self.flying = false

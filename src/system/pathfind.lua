@@ -15,11 +15,14 @@ function PF:getMoveablePositions(unit)
     -- Define start and goal locations coordinates
     local startX, startY = unit.tile.x + 1, unit.tile.y + 1
     local endX, endY = destTile.x + 1, destTile.y + 1
+
+    -- Define Stats for validation
     local destDistance = math.abs(startX - endX) + math.abs(startY - endY)
+    local destUnit = map:getUnit(destTile.x, destTile.y)
 
 
-
-    if destDistance <= unit:getMovementRange() and map:getUnit(destTile.x, destTile.y) == nil then
+    if destDistance <= unit:getMovementRange() and (destUnit == nil or destUnit:isFriendly() == false) then
+      -- If Destination is valid, determine if path exists.
       local path = finder:getPath(startX, startY, endX, endY)
 
       if path and path:getLength() <= unit:getMovementRange() then
@@ -29,6 +32,30 @@ function PF:getMoveablePositions(unit)
   end
 
   return moveablePositions
+end
+
+function PF:getPath(tileStart, tileEnd)
+  local finder = self:getPathfinder(tileStart.map)
+
+  local startX, startY = tileStart.x + 1, tileStart.y + 1
+  local endX, endY = tileEnd.x + 1, tileEnd.y + 1
+
+  local path = finder:getPath(startX, startY, endX, endY)
+
+  if path == nil then
+    error('no path here... baka...')
+  end
+
+  return self:pathOneToZero(path)
+end
+
+function PF:pathOneToZero(path)
+  for node, count in path:nodes() do
+    node.x = node.x - 1
+    node.y = node.y - 1
+  end
+
+  return path
 end
 
 function PF:getPathfinder(map)

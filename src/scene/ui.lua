@@ -136,17 +136,24 @@ function Ui:drawHover()
   local info = nil
   local hp = nil
   local maxHp = nil
+  local friendly = nil
 
-  if game.map.selectedTile.unit then
-    info = game.map.selectedTile.unit:hover()
-    hp = game.map.selectedTile.unit.hp
-    maxHp = game.map.selectedTile.unit.maxHp
+  local tile = game.map.selectedTile
+  local unit = tile.unit
+
+  if unit then
+    info = unit:hover()
+    hp = unit.hp
+    maxHp = unit.maxHp
+    friendly = unit:isFriendly() and 'Friendly' or 'Unfriendly'
   else
-    info = game.map.selectedTile:hover()
+    info = tile:hover()
   end
 
-  if hp and maxHp then
-    self:drawTextShadow(hp .. ' of ' .. maxHp, 5, 245, COLOR_PINK)
+  if hp and maxHp and friendly then
+    local color = unit:isFriendly() and COLOR_GREEN or COLOR_RED
+
+    self:drawTextShadow(friendly .. ' - ' .. hp .. ' of ' .. maxHp .. ' hp', 5, 245, color)
   end
 
   if info.name then

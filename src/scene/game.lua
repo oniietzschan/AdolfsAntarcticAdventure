@@ -11,7 +11,8 @@ function Game:initialize(t)
 
   Scene.initialize(self, t)
 
-  self.map = Map()
+  self.currentMap = 0
+  self:nextMap()
 
   self:setMode(NORMAL)
   self:clearMoveOkay()
@@ -23,9 +24,20 @@ function Game:update(dt)
   -- Game pauses execution during window drag, so limit frame time to 30FPS.
   dt = math.min(dt, ONE_FRAME_30FPS)
 
+  if self.mapFinished then
+    self:nextMap()
+  end
+
   self.map:update(dt)
 
   self:handleMapClick()
+end
+
+function Game:nextMap()
+  self.currentMap = self.currentMap + 1
+  self.mapFinished = false
+
+  self.map = Map()
 end
 
 function Game:handleMapClick()
@@ -89,6 +101,22 @@ function Game:tryToStartMove()
   return true
 end
 
+function Game:setMoveOkay(positions)
+  self:clearMoveOkay()
+
+  for _, p in ipairs(positions) do
+    self.moveOkay[pos(p.x, p.y)] = true
+
+    if self.map:getUnit(p.x, p.y) then -- Unit on position: ATTACK!
+      self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_RED)
+      self.map:setUnitColor(p.x, p.y, COLOR_HIGHLIGHT_REALLY_RED)
+
+    else -- Position free: MOVE!
+      self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_BLUE)
+    end
+  end
+end
+
 function Game:tryToExecuteMove()
   if self.mode ~= MOVE or self.moveSubject == nil then
     return false
@@ -100,10 +128,16 @@ function Game:tryToExecuteMove()
     return false
   end
 
-  -- OK! Perform Move
   local unit = self.moveSubject
-  self.map:setUnit(unit.tile.x, unit.tile.y, nil)
-  self.map:setUnit(tile.x, tile.y, unit)
+  local destUnit = self.map:getUnit(tile.x, tile.y)
+
+  -- OK! Perform Attack And/Or Move
+  if destUnit then
+    self:performAttack(unit, destUnit)
+  else
+    self:performMove(unit, tile)
+  end
+
   unit:setMoved(true)
 
   self:setMode(NORMAL)
@@ -115,18 +149,32 @@ function Game:isMoveOkay(x, y)
   return self.moveOkay[pos(x, y)] == true
 end
 
-function Game:setMoveOkay(positions)
-  self:clearMoveOkay()
+function Game:performAttack(attacker, defender)
+  -- Move attacker closer to defender if needed.
+  local path = Pathfind:getPath(attacker.tile, defender.tile)
 
-  for _, p in ipairs(positions) do
-    self.moveOkay[pos(p.x, p.y)] = true
-
-    self.map:setColor(p.x, p.y, COLOR_HIGHLIGHT_BLUE)
+  for node, count in path:nodes() do
+    if count == path:getLength() then -- lol...
+      self:performMove(attacker, self.map:getTile(node.x, node.y))
+    end
   end
+
+  -- Deal damage.
+  defender:takeDamage(attacker:getAttack())
+
+  if defender.hp == 0 then
+    defender:remove()
+  end
+end
+
+function Game:performMove(unit, destTile)
+  self.map:setUnit(unit.tile.x, unit.tile.y, nil)
+  self.map:setUnit(destTile.x, destTile.y, unit)
 end
 
 function Game:clearMoveOkay()
   self.map:clearColors()
+  self.map:clearUnitColors()
 
   self.moveOkay = {}
 end
@@ -153,6 +201,8 @@ function Game:fillBackgroundColor()
 end
 
 function Game:endTurn()
+  self:setMode(NORMAL)
+
   self.map:endTurn()
 end
 

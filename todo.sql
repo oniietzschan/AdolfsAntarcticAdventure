@@ -45,9 +45,11 @@
         -- Physical Movement
         -- Pathfinding
       - Attacking
-        - Highlight Attackable Area
+        -- Highlight Attackable Area
+        - Move Closer
+          - Handle When Closest Spot Is Not Free
         - Physical Attack
-          - Remove HP
+          -- Remove HP
           - Remove Unit if destroyed
       - Can Build
   - Enemy
@@ -55,13 +57,13 @@
     -- Agarthan Polar Monolith
       -- Sprite
       -- Convert To Unit
-      - Can Be Destoyed
+      -- Can Be Destoyed
   - Turn
     -- Generate Resources
-    - Allow Units To Move Again
+    -- Allow Units To Move Again
     - Enemy AI
-  - Gameflow
-    - After Monolith destroyed, load next map
+  -- Gameflow
+    -- After Monolith destroyed, load next map
   -- UI
     -- Show Unit HP
 
