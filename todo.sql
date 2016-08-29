@@ -9,18 +9,17 @@
 
 
 - Daisuki
-  - Animation
-    - Attack Animation
+  -- Animation
+    -- Attack Animation
       -- Shake
-      - Death animation
-      - Display Damage As Number
+      -- Death animation
     -- Player
       -- Attack
       -- Move
-    - Enemies
+    -- Enemies
       -- Attack
       -- Move
-      - Not everything all happening at once
+      -- Not everything all happening at once
   - Sound
   - Music
   - Gameplay
@@ -54,11 +53,14 @@
   -- Focused Tile should be more precise
   - Graphical Polish
     - Real UI
+      - Show HP bar on units
     -- Units Change Facing After Movement
 
 
 
 - Suki
+  - Animation
+    - Attack Animation: Display Damage As Number
   - Generate Cute Names For Units
   - More Flavour Text
     - Allow Wrapping?

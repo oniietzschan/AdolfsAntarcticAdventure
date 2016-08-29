@@ -1,5 +1,6 @@
 local C = class('Unit')
 
+C:include(Color)
 C:include(Shake)
 
 function C:initialize()
@@ -7,11 +8,14 @@ function C:initialize()
     self.name = self:getRandomName()
   end
 
+  self:colorInit()
+
   self:setMoved(false)
   self:setAttacked(false)
 end
 
 function C:remove()
+  self.tile:addFrill(self)
   self.tile:setUnit(nil)
 end
 
@@ -26,7 +30,12 @@ function C:draw()
     color = COLOR_HIGHLIGHT_DARK_GREY
   end
 
-  lg.setColor(color)
+  local r, g, b = unpack(color)
+  local a = 255
+
+  r, g, b, a = self:colorProcessRgb(r, g, b, a)
+
+  lg.setColor(r, g, b, a)
 
   local x, y = self:getDrawOffset()
 
@@ -60,8 +69,25 @@ function C:takeDamage(dmg)
 
   self.hp = self.hp - dmg
 
+  self:shake({intensity = 3, duration = 0.6})
+
   if self.hp < 0 then
     self.hp = 0
+  end
+
+  local TIME = 0.6
+
+  Timer.tween(TIME * 0.25, self, {colorR = 2, colorB = 2, colorG = 2}, 'in-cubic')
+  Timer.after(TIME * 0.25, function()
+    Timer.tween(TIME * 0.25, self, {colorR = 1, colorB = 1, colorG = 1}, 'in-cubic')
+  end)
+
+  if self.hp == 0 then
+    local tile = self.tile
+    Timer.after(TIME, function() tile:removeFrill(self) end)
+    Timer.tween(TIME, self, {colorA = 0}, 'in-cubic')
+
+    self:remove()
   end
 end
 

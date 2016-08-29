@@ -228,6 +228,9 @@ function Map:getSortedDrawables()
     if tile.unit then
       table.insert(drawables, #drawables + 1, tile.unit)
     end
+    for i, frill in ipairs(tile.frills) do
+      table.insert(drawables, #drawables + 1, frill)
+    end
   end
 
   table.sort(drawables, function(a, b)

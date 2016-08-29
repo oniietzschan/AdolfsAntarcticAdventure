@@ -199,27 +199,20 @@ function Game:tryToExecuteAttack()
 end
 
 function Game:performAttack(attacker, defender)
-  -- Deal damage.
   defender:takeDamage(attacker:getAttack())
-
-  if defender.hp == 0 then
-    defender:remove()
-  else
-    defender:shake({intensity = 3, duration = 0.6})
-  end
 end
 
-function Game:performMove(unit, destTile)
+function Game:performMove(unit, destTile, callback)
   if unit.tile.x ~= destTile.x or unit.tile.y ~= destTile.y then
     unit:setMoved(true)
   end
 
-  self:animateMovement(unit, destTile)
+  self:animateMovement(unit, destTile, callback)
 
   self.map:setUnit(destTile.x, destTile.y, unit)
 end
 
-function Game:animateMovement(unit, destTile)
+function Game:animateMovement(unit, destTile, callback)
   local filter = function(tile)
     return tile.unit and tile.unit:isFriendly() ~= unit:isFriendly()
   end
@@ -238,6 +231,13 @@ function Game:animateMovement(unit, destTile)
 
           Timer.tween(0.15, unit, {drawAtX = x, drawAtY = y}, 'linear')
           Timer.after(0.15, go)
+
+          -- execute callback after final move.
+          if callback and i == #tiles then
+            Timer.after(0.15, function()
+              callback()
+            end)
+          end
         end
       end)
     )
@@ -337,12 +337,11 @@ function Game:moveEnemies()
   table.sort(aiData, function(a, b) return a.closestUnitDist < b.closestUnitDist end)
   for _, data in ipairs(aiData) do
 
-    self:moveEnemy(data)
-    self:attackWithEnemy(data.enemy)
+    self:enemyMovesThenAttacks(data)
   end
 end
 
-function Game:moveEnemy(data)
+function Game:enemyMovesThenAttacks(data)
   local enemy = data.enemy
 
   for _, path in ipairs(data.unitPaths) do
@@ -359,7 +358,13 @@ function Game:moveEnemy(data)
       end
     end
     if furthestTile then
-      self:performMove(enemy, furthestTile)
+      local callback = function()
+        self:attackWithEnemy(data.enemy)
+      end
+      self:performMove(enemy, furthestTile, callback)
+    else
+      -- Wasn't able to move... try attacking anyways?
+      self:attackWithEnemy(data.enemy)
     end
 
     -- exit if successfully followed path

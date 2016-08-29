@@ -3,6 +3,8 @@ local C = class('Tile')
 function C:initialize()
   self.sprite = Sprite.tiles:newInstance()
     :setAnimation(self:getDefaultAnimation())
+
+  self.frills = {}
 end
 
 function C:getDefaultAnimation()
@@ -61,6 +63,27 @@ function C:setUnit(unit)
   if unit ~= nil then
     unit.tile = self
   end
+end
+
+function C:addFrill(frill)
+  for i, v in ipairs(self.frills) do
+    if v == frill then
+      error('already within frill...')
+    end
+  end
+
+  table.insert(self.frills, frill)
+end
+
+function C:removeFrill(frill)
+  for i, v in ipairs(self.frills) do
+    if v == frill then
+      table.remove(self.frills, i)
+      return self
+    end
+  end
+
+  error('could not find within frill...')
 end
 
 function C:endTurn()
