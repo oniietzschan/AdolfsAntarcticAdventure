@@ -14,7 +14,7 @@
       -- Shake
       - Death animation
       - Display Damage As Number
-    - Player
+    -- Player
       -- Attack
       -- Move
     - Enemies
@@ -23,12 +23,16 @@
       - Not everything all happening at once
   - Sound
   - Music
-  - Gameplay - Fundamental
-    - Enemies should determine whether target still exists before moving towards it
-    -- Should be able to move 1-2 spaces, then attack. To allow for fighting in close quarters
-  - Gameplay - Quality Of Life
-    - After cancelling attack, if next to enemy, should still be able to attack. (If not next to enemy, end unit turn as before.)
-    - Shoot on spot without clicking kyara again
+  - Gameplay
+    - Fundamental
+      -- Should be able to move 1-2 spaces, then attack. To allow for fighting in close quarters
+      - Enemy AI
+        - Seek out unit with lowest HP
+        - Enemies should determine whether target still exists before moving towards it
+        - Should reposition to allow other enemies to move in, more attacking at once.
+    - Quality Of Life
+      - After cancelling attack, if next to enemy, should still be able to attack. (If not next to enemy, end unit turn as before.)
+      - Shoot on spot without clicking kyara again
   - Units
     - Vril Flying Machine
       - Sprite
@@ -49,9 +53,8 @@
     - Show red X when unable to build on a certain terrain, or similar
   -- Focused Tile should be more precise
   - Graphical Polish
-    - Units Change Facing After Movement
-    - Actually Good UI
-      - Seek out unit with lowest HP
+    - Real UI
+    -- Units Change Facing After Movement
 
 
 
