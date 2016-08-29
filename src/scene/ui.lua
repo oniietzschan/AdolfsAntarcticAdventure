@@ -109,6 +109,8 @@ function Ui:draw()
 
   self:drawButtons()
 
+  self:drawDebug()
+
   -- self:drawDialog()
   -- self:drawDialogDebug()
 end
@@ -143,7 +145,7 @@ function Ui:drawHover()
 
   if unit then
     info = unit:hover()
-    name = unit.name or ''
+    name = unit.name
     hp = unit.hp
     maxHp = unit.maxHp
     friendly = unit:isFriendly() and 'Friendly' or 'Unfriendly'
@@ -196,6 +198,27 @@ function Ui:drawButtons()
   for _, button in ipairs(self.buttons) do
     button:draw()
   end
+end
+
+function Ui:drawDebug()
+  local tile = game.map.selectedTile
+  if tile == nil then
+    return false
+  end
+
+  lg.setFont(font["mono16"])
+  lg.setLineWidth(1)
+
+  -- TILE X, Y
+  self:drawTextShadow(tile.x .. ', ' .. tile.y, 5, 345, COLOR_PINK)
+
+  -- -- DRAW OFFSET
+  -- local x, y = tile:getDrawOffset()
+  -- self:drawTextShadow(x .. ', ' .. y, 5, 305, COLOR_PINK)
+  -- if tile.unit then
+  --   x, y = tile.unit:getDrawOffset()
+  --   self:drawTextShadow(x .. ', ' .. y, 5, 320, COLOR_PINK)
+  -- end
 end
 
 function Ui:drawDialog()

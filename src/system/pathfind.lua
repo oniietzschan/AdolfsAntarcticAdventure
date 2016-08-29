@@ -86,6 +86,18 @@ function PF:getPathfinder(map, filter)
   return finder
 end
 
+function PF:getTilesAlongPath(path, map)
+  local tiles = {}
+
+  for node, count in path:nodes() do
+    if count > 1 then -- skip starting tile
+      table.insert(tiles, map:getTile(node.x, node.y))
+    end
+  end
+
+  return tiles
+end
+
 function PF:test(unit)
   local map = unit.tile.map
   local grid = self:mapToGrid(map)

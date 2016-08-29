@@ -19,46 +19,44 @@ function Map:initialize()
 
   self:load()
 
-  self:storeOrderedTiles()
-
   self:clearColors()
   self:clearUnitColors()
 end
 
 local maps = {
--- [[
--- ^^^^...^^^
--- ^$......|^
--- .p.a......
--- ....*.....
--- ..^...^^^.
--- .p..$^^^..
--- .......a..
--- ..p.......
--- ^....*.^$^
--- ^^..^^^^^^
--- ]],
+[[
+^^^^.a.^^^
+^$......|^
+.p.....a..
+..p.*.....
+..^p..^^^.
+.p..$^^^..
+.......a..
+..p...a...
+^....*.^$^
+^^..^^^^^^
+]],
 [[
 ^^^^^^^^^^
-^$......|^
-^........^
-^....*^.a^
-^..^...^^^
-^.$..$^^^^
-^....p..p^
-^.....p..^
-^......^$^
-^^^^$^^^^^
+^$....|.^^
+.........^
+.....^^.a^
+..*^...^^^
+..^..$^^^^
+.....p..p^
+......p...
+^^........
+^^^$^.....
 ]],
 [[
 ^^^^...^^^
 ^$......|^
 ...a......
 ....*.....
-..^...^^^.
-.p..$^^^..
+.p^...^^^.
+....$^^^..
 .......a..
-..p.......
+.p........
 ^....*.^$^
 ^^..^^^^^^
 ]],
@@ -73,6 +71,18 @@ p..p..p.p.
  pp....p..
 ..........
 ..........
+]],
+[[
+^^^^...^^^
+^$.......^
+...a.....^
+....*...^^
+.p^...^^^.
+....$^^^..
+.....^....
+.pp.^^....
+^...^^.^|^
+^^..^^^^^^
 ]],
 }
 
@@ -116,26 +126,10 @@ function Map:load()
   end
 end
 
-function Map:storeOrderedTiles()
-  self.orderedTiles = {}
-
-  for _, tile in pairs(self.tiles) do
-    table.insert(self.orderedTiles, #self.orderedTiles + 1, tile)
-  end
-
-  table.sort(self.orderedTiles, function(a, b)
-    if a.x == b.x then
-      return a.y < b.y
-    else
-      return a.x > b.x
-    end
-  end)
-end
-
 function Map:update(dt)
   self:selectTile()
 
-  for _, tile in ipairs(self.orderedTiles) do
+  for _, tile in pairs(self.tiles) do
     tile:update(dt)
   end
 end
@@ -169,6 +163,7 @@ function Map:setTile(x, y, tile)
   tile.map = self
   tile.x = x
   tile.y = y
+  tile:populateDrawOffset()
 
   self.tiles[x .. ',' .. y] = tile
 end
@@ -195,6 +190,10 @@ function Map:getUnit(x, y)
 end
 
 function Map:setUnit(x, y, unit)
+  if unit and unit.tile then
+    unit.tile.unit = nil
+  end
+
   local tile = self:getTile(x, y)
   if tile == nil then
     error(x, y)
@@ -216,13 +215,40 @@ function Map:filterUnits(filter)
 end
 
 function Map:draw()
-  for _, tile in ipairs(self.orderedTiles) do
-    local color = self:getColor(tile.x, tile.y)
-
-    lg.setColor((tile == self.selectedTile) and COLOR_HIGHLIGHT_GREY or color)
-
-    tile:draw()
+  for i, drawable in ipairs(self:getSortedDrawables()) do
+    drawable:draw()
   end
+end
+
+function Map:getSortedDrawables()
+  local drawables = {}
+
+  for _, tile in pairs(self.tiles) do
+    table.insert(drawables, #drawables + 1, tile)
+    if tile.unit then
+      table.insert(drawables, #drawables + 1, tile.unit)
+    end
+  end
+
+  table.sort(drawables, function(a, b)
+    local ax, ay = a:getDrawOffset()
+    local bx, by = b:getDrawOffset()
+
+    if a:isInstanceOf(Unit) then
+      ay = ay + 7.99999
+    end
+    if b:isInstanceOf(Unit) then
+      by = by + 7.99999
+    end
+
+    if ay == by then
+      return ax > bx
+    else
+      return ay < by
+    end
+  end)
+
+  return drawables
 end
 
 function Map:getColor(x, y)
@@ -250,7 +276,7 @@ function Map:clearUnitColors()
 end
 
 function Map:endTurn()
-  for _, tile in ipairs(self.orderedTiles) do
+  for _, tile in pairs(self.tiles) do
     tile:endTurn()
 
     if tile.unit then

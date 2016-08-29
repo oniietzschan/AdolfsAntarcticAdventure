@@ -93,7 +93,6 @@ function Game:tryToBuild()
 
   -- OK! Perform Build
   self.map:setTile(tile.x, tile.y, self.toBuild(self.map))
-  self.map:storeOrderedTiles()
 
   self:setMode(NORMAL)
 
@@ -206,7 +205,7 @@ function Game:performAttack(attacker, defender)
   if defender.hp == 0 then
     defender:remove()
   else
-    defender:shake({intensity = 2, duration = 0.6})
+    defender:shake({intensity = 3, duration = 0.6})
   end
 end
 
@@ -215,8 +214,34 @@ function Game:performMove(unit, destTile)
     unit:setMoved(true)
   end
 
-  self.map:setUnit(unit.tile.x, unit.tile.y, nil)
+  self:animateMovement(unit, destTile)
+
   self.map:setUnit(destTile.x, destTile.y, unit)
+end
+
+function Game:animateMovement(unit, destTile)
+  local filter = function(tile)
+    return tile.unit and tile.unit:isFriendly() ~= unit:isFriendly()
+  end
+  local path = Pathfind:getPath(unit.tile, destTile, filter)
+  local tiles = Pathfind:getTilesAlongPath(path, self.map)
+
+  -- Sorry... Progressively move through each tile.
+  unit.drawAtX, unit.drawAtY = unit.tile:getDrawOffset()
+  Chain(
+    unpack(
+      _.map(tiles, function(i, tile)
+        return function (go)
+          local x, y = tile:getDrawOffset()
+
+          unit.sprite:setMirrored(unit.drawAtX < x)
+
+          Timer.tween(0.15, unit, {drawAtX = x, drawAtY = y}, 'linear')
+          Timer.after(0.15, go)
+        end
+      end)
+    )
+  )()
 end
 
 function Game:isActionOkay(x, y)
@@ -324,15 +349,17 @@ function Game:moveEnemy(data)
     -- TODO: check if ally at end of path still exists!!
 
     -- Move as far as possible
+    local furthestTile = nil
     for node, count in path:nodes() do
-      if count > enemy:getMovementRange() + 1 then
-        return
+      if count <= enemy:getMovementRange() + 1 then
+        local tile =  self.map:getTile(node.x, node.y)
+        if tile.unit == nil then
+          furthestTile = tile
+        end
       end
-
-      local tile =  self.map:getTile(node.x, node.y)
-      if tile.unit == nil then
-        self:performMove(enemy, tile)
-      end
+    end
+    if furthestTile then
+      self:performMove(enemy, furthestTile)
     end
 
     -- exit if successfully followed path

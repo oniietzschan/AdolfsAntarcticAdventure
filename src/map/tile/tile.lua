@@ -18,11 +18,21 @@ function C:update(dt)
 end
 
 function C:draw()
-  local x = 0
-  local y = 0
+  local color = self.map:getColor(self.x, self.y)
+  lg.setColor((self == self.map.selectedTile and color == COLOR_WHITE) and COLOR_HIGHLIGHT_GREY or color)
 
-  x = x + self.x * 16
-  y = y - self.x * 8
+  local x, y = self:getDrawOffset()
+
+  self.sprite:draw(x, y)
+end
+
+function C:getDrawOffset()
+  return self.drawAtX, self.drawAtY
+end
+
+function C:populateDrawOffset()
+  local x = self.x * 16
+  local y = self.x * -8
 
   x = x + self.y * 16
   y = y + self.y * 8
@@ -33,11 +43,8 @@ function C:draw()
   -- centre offset
   y = y - 8
 
-  self.sprite:draw(x, y)
-
-  if self.unit then
-    self.unit:draw(x, y)
-  end
+  self.drawAtX = x
+  self.drawAtY = y
 end
 
 function C:isPassable()

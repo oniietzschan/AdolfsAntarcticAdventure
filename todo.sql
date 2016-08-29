@@ -9,6 +9,18 @@
 
 
 - Daisuki
+  - Animation
+    - Attack Animation
+      -- Shake
+      - Death animation
+      - Display Damage As Number
+    - Player
+      -- Attack
+      -- Move
+    - Enemies
+      -- Attack
+      -- Move
+      - Not everything all happening at once
   - Sound
   - Music
   - Gameplay - Fundamental
@@ -16,15 +28,7 @@
     -- Should be able to move 1-2 spaces, then attack. To allow for fighting in close quarters
   - Gameplay - Quality Of Life
     - After cancelling attack, if next to enemy, should still be able to attack. (If not next to enemy, end unit turn as before.)
-  - Animations
-    - Animations During Attack
-      -- Shake
-      - Display Damage As Number
-    - Animations During Movement
-    - Animations During Enemy Turn
-      -- Attack
-      - Move
-      - Not everything all happening at once
+    - Shoot on spot without clicking kyara again
   - Units
     - Vril Flying Machine
       - Sprite
@@ -47,6 +51,7 @@
   - Graphical Polish
     - Units Change Facing After Movement
     - Actually Good UI
+      - Seek out unit with lowest HP
 
 
 
@@ -61,6 +66,7 @@
     - Different Mountains
   - Graphical Polish
     - Tween Unit bounce when spawned
+    - Highlight entire range when attacking, using lighter red for squares with no enemies
 
 
 

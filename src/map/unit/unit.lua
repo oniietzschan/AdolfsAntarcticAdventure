@@ -19,7 +19,7 @@ function C:update(dt)
   self.sprite:animate(dt)
 end
 
-function C:draw(x, y)
+function C:draw()
   local color = self.tile.map:getUnitColor(self.tile.x, self.tile.y) or COLOR_WHITE
 
   if self:isFriendly() and self:canMove() == false and self:canAttack() == false then
@@ -28,10 +28,20 @@ function C:draw(x, y)
 
   lg.setColor(color)
 
+  local x, y = self:getDrawOffset()
+
   x = x + self:shakeGetOffset()
   y = y + self:shakeGetOffset()
 
   self.sprite:draw(x, y)
+end
+
+function C:getDrawOffset()
+  if self.drawAtX ~= nil and self.drawAtY ~= nil then
+    return self.drawAtX, self.drawAtY
+  end
+
+  return self.tile:getDrawOffset()
 end
 
 function C:getAttack()

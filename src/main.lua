@@ -4,10 +4,12 @@ function pos(x, y)
   return x .. ',' .. y
 end
 
-class          = require 'lib.middleclass'
-Serpent        = require 'lib.serpent'
-Timer          = require 'lib.hump.timer'
-Terebi         = require 'lib.terebi.terebi'
+_       = require 'lib.moses'
+class   = require 'lib.middleclass'
+Chain   = require 'lib.knife.chain'
+Serpent = require 'lib.serpent'
+Timer   = require 'lib.hump.timer'
+Terebi  = require 'lib.terebi.terebi'
 
 require 'system.constants'
 
@@ -35,6 +37,10 @@ Panzer           = require 'map.unit.panzer'
 
 Button = require 'ui.button'
 
+Scene = require 'scene.scene'
+Game  = require 'scene.game'
+Ui    = require 'scene.ui'
+
 -- Base   = require 'entity.base'
 
 -- BaseFrill = require 'entity.frill.base_frill'
@@ -43,10 +49,6 @@ Button = require 'ui.button'
 
 -- Seibutsu = require 'entity.seibutsu.seibutsu'
 -- Player   = require 'entity.seibutsu.player'
-
-Scene = require 'scene.scene'
-Game  = require 'scene.game'
-Ui    = require 'scene.ui'
 
 game = nil
 ui = nil
