@@ -82,7 +82,13 @@ function C:takeDamage(dmg)
     Timer.tween(TIME * 0.25, self, {colorR = 1, colorB = 1, colorG = 1}, 'in-cubic')
   end)
 
-  if self.hp == 0 then
+
+
+  if self.hp > 0 then
+    Util.sound('unitHit', 2)
+  else
+    Util.sound('unitKilled', 2)
+
     local tile = self.tile
     Timer.after(TIME, function() tile:removeFrill(self) end)
     Timer.tween(TIME, self, {colorA = 0}, 'in-cubic')

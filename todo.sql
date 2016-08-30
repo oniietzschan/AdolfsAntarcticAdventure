@@ -20,8 +20,10 @@
       -- Attack
       -- Move
       -- Not everything all happening at once
-  - Sound
+  -- Sound
   - Music
+  - Campaign
+    - Mission Debriefing
   - Gameplay
     - Fundamental
       -- Should be able to move 1-2 spaces, then attack. To allow for fighting in close quarters
@@ -45,12 +47,12 @@
     -- Gameplay Info
     -- Flavour Text
     -- Hover Over Units
+  -- Accessibility
+    -- Show red X when unable to build on a certain terrain, or similar
+  -- Focused Tile should be more precise
   - Fix Shitty Sprites
     - Mine
     - Vril Harvester
-  - Accessibility
-    - Show red X when unable to build on a certain terrain, or similar
-  -- Focused Tile should be more precise
   - Graphical Polish
     - Real UI
       - Show HP bar on units
@@ -59,6 +61,7 @@
 
 
 - Suki
+  - Sound
   - Animation
     - Attack Animation: Display Damage As Number
   - Generate Cute Names For Units
@@ -72,6 +75,8 @@
   - Graphical Polish
     - Tween Unit bounce when spawned
     - Highlight entire range when attacking, using lighter red for squares with no enemies
+  - Bugs
+    - It should not be possible to move friendly units until enemies have finished attacking.
 
 
 

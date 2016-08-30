@@ -16,6 +16,7 @@ require 'system.constants'
 Util     = require 'system.util'
 Input    = require 'system.input'
 Pathfind = require 'system.pathfind'
+Sound    = require 'system.sound'
 Sprite   = require 'system.sprite'
 
 Map  = require 'map.map'

@@ -199,6 +199,8 @@ function Game:tryToExecuteAttack()
 end
 
 function Game:performAttack(attacker, defender)
+  attacker.sprite:setMirrored(attacker.tile.x < defender.tile.x)
+
   defender:takeDamage(attacker:getAttack())
 end
 
@@ -231,6 +233,11 @@ function Game:animateMovement(unit, destTile, callback)
 
           Timer.tween(0.15, unit, {drawAtX = x, drawAtY = y}, 'linear')
           Timer.after(0.15, go)
+
+          -- Play sound
+          if unit:isFriendly() then
+            Util.sound('unitWalk', 1.5)
+          end
 
           -- execute callback after final move.
           if callback and i == #tiles then

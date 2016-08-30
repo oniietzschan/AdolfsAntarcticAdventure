@@ -17,6 +17,15 @@ function Util.sample(t)
   return t[math.random(#t)]
 end
 
+function Util.sound(soundName, pitchFactor)
+  local pitchAmount = 0.125 * (pitchFactor or 1)
+
+  local snd = Sound[soundName]:clone()
+
+  snd:setPitch(1 - pitchAmount * 0.5 + math.random() * pitchAmount)
+  la.play(snd)
+end
+
 -- Util.choose = function(cond, a, b)
 --   if cond then
 --     return a

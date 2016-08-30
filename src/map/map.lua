@@ -1,5 +1,7 @@
 local Map = class('Map')
 
+local scenario = require 'map.scenario'
+
 function Map:initialize()
   self.offsetX = 128
   self.offsetY = 171
@@ -23,106 +25,45 @@ function Map:initialize()
   self:clearUnitColors()
 end
 
-local maps = {
-[[
-^^^^.a.^^^
-^$......|^
-.p.....a..
-..p.*.....
-..^p..^^^.
-.p..$^^^..
-.......a..
-..p...a...
-^....*.^$^
-^^..^^^^^^
-]],
-[[
-^^^^^^^^^^
-^$....|.^^
-.........^
-.....^^.a^
-..*^...^^^
-..^..$^^^^
-.....p..p^
-......p...
-^^........
-^^^$^.....
-]],
-[[
-^^^^...^^^
-^$......|^
-...a......
-....*.....
-.p^...^^^.
-....$^^^..
-.......a..
-.p........
-^....*.^$^
-^^..^^^^^^
-]],
-[[
-..........
-..........
-.pp...pppp
-p.......p.
-p.......p.
-p.pp....p.
-p..p..p.p.
- pp....p..
-..........
-..........
-]],
-[[
-^^^^...^^^
-^$.......^
-...a.....^
-....*...^^
-.p^...^^^.
-....$^^^..
-.....^....
-.pp.^^....
-^...^^.^|^
-^^..^^^^^^
-]],
-}
-
 function Map:load()
   local y = 0
 
-  local mapData = maps[game.currentMap]
+  local mapData = scenario[game.currentMap].tiles
 
-  for line in string.gmatch(mapData, "(.-)\n") do
+  for line in string.gmatch(mapData, "([^%s]*)\n") do
     for x = 0, #line - 1 do
       local char = line:sub(x + 1, x + 1)
-
-      local class, unitClass = nil, nil
-
-      if     char == '^' then
-        class = Mountain
-      elseif char == '$' then
-        class = SteelMountain
-      elseif char == '*' then
-        class = Crystal
-      elseif char == '|' then
-        unitClass = AgarthanMonolith
-      elseif char == 'a' then
-        unitClass = Agarthan
-      elseif char == 'p' then
-        unitClass = Panzer
-      end
-
-      if class then
-        local tile = class(self)
-        self:setTile(x, y, tile)
-      end
-
-      if unitClass then
-        local unit = unitClass(self)
-        self:setUnit(x, y, unit)
-      end
+      self:loadTile(char, x, y)
     end
-
     y = y + 1
+  end
+end
+
+function Map:loadTile(char, x, y)
+  local class, unitClass = nil, nil
+
+  if     char == '^' then
+    class = Mountain
+  elseif char == '$' then
+    class = SteelMountain
+  elseif char == '*' then
+    class = Crystal
+  elseif char == '|' then
+    unitClass = AgarthanMonolith
+  elseif char == 'a' then
+    unitClass = Agarthan
+  elseif char == 'p' then
+    unitClass = Panzer
+  end
+
+  if class then
+    local tile = class(self)
+    self:setTile(x, y, tile)
+  end
+
+  if unitClass then
+    local unit = unitClass(self)
+    self:setUnit(x, y, unit)
   end
 end
 
@@ -223,6 +164,7 @@ end
 function Map:getSortedDrawables()
   local drawables = {}
 
+  -- Gather together all drawables.
   for _, tile in pairs(self.tiles) do
     table.insert(drawables, #drawables + 1, tile)
     if tile.unit then
@@ -233,6 +175,7 @@ function Map:getSortedDrawables()
     end
   end
 
+  -- Sort them.
   table.sort(drawables, function(a, b)
     local ax, ay = a:getDrawOffset()
     local bx, by = b:getDrawOffset()
