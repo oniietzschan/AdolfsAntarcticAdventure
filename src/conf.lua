@@ -44,4 +44,18 @@ function love.conf(t)
   t.modules.touch = false
   t.modules.video = false
   t.modules.window = true
+
+  t.releases = {
+    title = "Adolf's Antarctic Adventure",
+    package = 'adolfantar',        -- The project command and package name (string)
+    loveVersion = '0.10.1',
+    version = nil,                 -- The project version
+    author = 'shru',
+    email = 'zuck@facebook.com',
+    description = 'A great game to play with family and friends.',
+    homepage = 'http://rori.moe',
+    identifier = 'AIDS',           -- The project Uniform Type Identifier (string)
+    excludeFileList = {},          -- File patterns to exclude. (string list)
+    releaseDirectory = 'releases', -- Where to store the project releases (string)
+  }
 end
